@@ -1,25 +1,57 @@
-// defines a simple account object and functions to update it, then prints the final balance.
-let userAccount = {
-    fullName: 'MozhganAhsant',
-    outgo: 0,
-    income: 0
+// let course = {
+//     name: 'Advance JS',
+//     studentLimit: 30,
+//     studentCount: 0,
+//     checkAvailability: function(courseSize) {
+//         console.log(courseSize)
+//     }
+// }
+
+// course.checkAvailability(20)       // 20
+
+//OR
+// let course = {
+//     name: 'Advance JS',
+//     studentLimit: 30,
+//     studentCount: 0,
+//     checkAvailability: function(courseSize) {
+//         // console.log(courseSize)
+//         return true
+//     }
+// }
+
+// let status1 = course.checkAvailability(20)
+//  console.log(status1)    //true
+
+// //OR
+// let course = {
+//     name: 'Advance JS',
+//     studentLimit: 30,
+//     studentCount: 0,
+//     checkAvailability: function(courseSize) {
+//         console.log(this.name)
+//         return true
+//     }
+// }
+
+// let status1 = course.checkAvailability(20)
+//  console.log(status1)    // Advance JS
+//                         // true
+
+//OR
+let course = {
+    name: 'Advance JS',
+    studentLimit: 30,
+    studentCount: 0,
+    checkAvailability: function(courseSize) {
+        let leftCount = this.studentLimit - this.studentCount
+        return courseSize <= leftCount
+    }
 }
 
-let addOutgo = function(account, amount) {
-    account.outgo = account.outgo + amount
-}
+let status1 = course.checkAvailability(20)
+ console.log(status1)    // true
 
-let addIncome = function(account, income) {
-    account.income = account.income + income
-}
-
-let getAccountdata = function(account) {
-    let balance = account.income - account.outgo
-    return `Account Name: ${account.fullName} - Balance: ${balance}`
-}
-
-addIncome(userAccount, 2000)
-addOutgo(userAccount, 160)
-addOutgo(userAccount, 200)
-
-console.log(getAccountdata(userAccount))    // Account Name: MozhganAhsant - Balance: 1640
+ let status2 = course.checkAvailability(35)
+ console.log(status2)    // false
+                    
