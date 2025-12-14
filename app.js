@@ -1,7 +1,24 @@
-let getUserInfo = function(name, id) {
-    return `Name: ${name} - ID: ${id}`
+// let userInfo = {
+//     userId: 22,
+//     userName: 'Mozhgan',
+//     role: 'Admin'
+// }
+// console.log(`user role is: ${userInfo.role}`)        // user role is: Admin
+
+let userInfoOne = {
+    userId: 22,
+    username: 'Mozhy',
+    role: 'Admin'
 }
 
-let showResult = getUserInfo('Mozhan', 22)
-// Does not return default values
-console.log(showResult)     // Name: Mozhan ID: 22
+let userInfoTwo = {
+    userId: 12,
+    username: 'Test',
+    role: 'User'
+}
+
+let fetchUserData = function(user) {
+    console.log(`Username is: ${user.username}`)
+}
+fetchUserData(userInfoOne)  // Mozhy
+fetchUserData(userInfoTwo)  // Test
