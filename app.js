@@ -1,28 +1,24 @@
-// let age = 12
-// if (age > 20) {
-//     console.log('Is Young!')
-// }
+let firstName = 'Mozhgan'
 
-// if (age < 20) {
-//     console.log('Is Child!')
-// }
+if (true) {
+    let lastName = 'Ahsant'
+    console.log(lastName)       // Ahsant
+    if (true) {
+        let age = 30
+        console.log(age)
+    }
+}
 
-// // If statement
-// let validEmail = true
-// let validPasword = false
-// if (validEmail && validPasword) {
-//     console.log('Logged in')
-// } else if (validEmail || validPasword) {
-//     console.log('Is correct')
-// }
+// console.log(lastName)       // ReferenceError: lastName is not defined
+console.log(firstName)      // Mozhgan
 
-let isUser = false
-let userRole = 'admin'
 
-if (isUser) {
-    console.log('Welcome User!')
-} else if (userRole === 'admin') {
-    console.log('Welcome Admin!')       // Welcome Admin!
-} else {
-    console.log('Welcome!')
+let name = 'Test1'
+
+if (true) {
+    let name = 'Test2'
+    if (true) {
+        let name = 'Test3'      // Test3
+        console.log(name)
+    }
 }
