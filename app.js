@@ -1,57 +1,11 @@
-// let course = {
-//     name: 'Advance JS',
-//     studentLimit: 30,
-//     studentCount: 0,
-//     checkAvailability: function(courseSize) {
-//         console.log(courseSize)
-//     }
-// }
+let fullName = 'MozhganAhsant'
 
-// course.checkAvailability(20)       // 20
+// console.log(fullName.length)    //13
+// console.log(fullName.toUpperCase())     //MOZHGANAHSANT
 
-//OR
-// let course = {
-//     name: 'Advance JS',
-//     studentLimit: 30,
-//     studentCount: 0,
-//     checkAvailability: function(courseSize) {
-//         // console.log(courseSize)
-//         return true
-//     }
-// }
+let password = 'Mozhgan12345'
+// console.log(password.includes('123456'))    //false
 
-// let status1 = course.checkAvailability(20)
-//  console.log(status1)    //true
-
-// //OR
-// let course = {
-//     name: 'Advance JS',
-//     studentLimit: 30,
-//     studentCount: 0,
-//     checkAvailability: function(courseSize) {
-//         console.log(this.name)
-//         return true
-//     }
-// }
-
-// let status1 = course.checkAvailability(20)
-//  console.log(status1)    // Advance JS
-//                         // true
-
-//OR
-let course = {
-    name: 'Advance JS',
-    studentLimit: 30,
-    studentCount: 0,
-    checkAvailability: function(courseSize) {
-        let leftCount = this.studentLimit - this.studentCount
-        return courseSize <= leftCount
-    }
-}
-
-let status1 = course.checkAvailability(20)
- console.log(status1)    // true
-
- let status2 = course.checkAvailability(35)
- console.log(status2)    // false
-                    
+let email = '  mozhy.ahsant.com'
+console.log(email)
+console.log(email.trim())
