@@ -1,3 +1,4 @@
+// defines a simple account object and functions to update it, then prints the final balance.
 let userAccount = {
     fullName: 'MozhganAhsant',
     outgo: 0,
