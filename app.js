@@ -1,24 +1,19 @@
-let firstName = 'Mozhgan'
+// let message = function() {
+//     console.log('Welcome')
+// }
+// message()
 
-if (true) {
-    let lastName = 'Ahsant'
-    console.log(lastName)       // Ahsant
-    if (true) {
-        let age = 30
-        console.log(age)
-    }
+
+// let userId = function(id) {
+//     console.log(id)
+// }
+// userId(5)        // 5
+// userId(2)        // 2
+
+let userId = function(id) {
+    let res = 'User ID is: ' + id
+    return res
 }
 
-// console.log(lastName)       // ReferenceError: lastName is not defined
-console.log(firstName)      // Mozhgan
-
-
-let name = 'Test1'
-
-if (true) {
-    let name = 'Test2'
-    if (true) {
-        let name = 'Test3'      // Test3
-        console.log(name)
-    }
-}
+let showResult = userId(10)
+console.log(showResult)
