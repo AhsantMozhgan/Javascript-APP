@@ -1,19 +1,15 @@
-// let message = function() {
-//     console.log('Welcome')
+// let sum = function(num1, num2, num3) {
+//     let res = num1 + num2 + num3
+//     return res
 // }
-// message()
 
+// let showResult = sum(2, 3, 4)
+// console.log(showResult)     // 9
 
-// let userId = function(id) {
-//     console.log(id)
-// }
-// userId(5)        // 5
-// userId(2)        // 2
-
-let userId = function(id) {
-    let res = 'User ID is: ' + id
-    return res
+let getUserInfo = function(name = 'Test', id = 2) {
+    return 'Name: ' + name + ' ' + 'ID: ' + id 
 }
 
-let showResult = userId(10)
-console.log(showResult)
+let showResult = getUserInfo('Mozhan', 22)
+// Does not return default values
+console.log(showResult)     // Name: Mozhan ID: 22
