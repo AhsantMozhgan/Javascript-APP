@@ -10,14 +10,14 @@ const cartItems = [{
 }]
 
 // const indexValue = cartItems.findIndex(function(item, index) {
-//     return item.title === 'book2'
+//     return item.title === 'Book2'
 // })
 // console.log(indexValue)     //1
 
 const findProducts = function(cart, productTitle) {
-    const indexValue = cart.findIndex(function(item, index) {
+    return cart.find(function(item, index) {
         // return item.title === productTitle
-        return item.title.toLowerCase() === productTitle
+        return item.title.toLowerCase() === productTitle.toLowerCase()
     })
     return cart[indexValue]
 }
