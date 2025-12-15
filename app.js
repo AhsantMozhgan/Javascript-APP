@@ -1,24 +1,11 @@
-// let isUser = true
-// isUser = false
-// console.log(isUser) //false
+// const tasks = ['Task1', 'Task2', 'Task3', 12, true]
+// console.log(tasks)           //[ 'Task1', 'Task2', 'Task3', 12, true ]
+// console.log(tasks.length)    //5
+// console.log(tasks[1])        //Task2
 
-// const isUser = true
-// isUser = false
-// console.log(isUser) // TypeError: Assignment to constant variable.
+const cartItems = ['book1', 'book2', 'book3']
 
-//OR
-// const userInfo = {
-//     id: 2
-// }
-// userInfo = {
-//     id: 21
-// }
-// console.log(userInfo)   //TypeError: Assignment to constant variable.
-
-// Correct code
-//shows that a const object’s properties can still be changed.
-const userInfo = {
-    id: 2
-}
-userInfo.id = 3
-console.log(userInfo.id)    //3
+let res = `You have ${cartItems.length} products in your cart.`
+console.log(`First item is: ${cartItems[0]}`)
+console.log(`Last item is: ${cartItems[cartItems.length - 1]}`)
+console.log(res)
