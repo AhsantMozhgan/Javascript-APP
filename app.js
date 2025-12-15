@@ -1,21 +1,25 @@
-// This code defines a password validation function.
-// Write a JavaScript function named `isValidPassword` that:
-// - Takes one parameter: `password`.  
-// - Returns `true` only if:
-//   - The password length is greater than 8 characters, and  
-//   - The password does NOT contain the substring `"12345"`.  
-// - Otherwise, it returns `false`.
+// let num = 12.293
 
+// let res = num.toFixed(2)
+// let res1 = num.toFixed(5)
+// console.log(res)    //12.29
+// console.log(res1)    //12.29300
 
+// console.log(Math.round(num))    //12
+// console.log(Math.floor(num))    //12
+// console.log(Math.ceil(num))     //13
 
-let isValidPassword = function(password) {
-    if (password.length > 8 && !password.includes('12345')) {
-        return true
-    } else {
-        return false
-    }  
-}
+// let randomNum = Math.random()
+// console.log(randomNum)  //0.31690170094571646
 
-console.log(isValidPassword('abcd12345'))   //false
-console.log(isValidPassword('abcd12'))      //false
-console.log(isValidPassword('abcdabcd22'))  //true
+// generate a random integer that is greater than or equal to num1 and less than num2.
+let num1 = 10
+let num2 = 20
+// let randomNum = Math.random() * (num2 - num1)
+// console.log(randomNum)  //9.13642468653013
+
+// let randomNum = Math.floor(Math.random() * (num2 - num1))
+// console.log(randomNum)  //4
+
+let randomNum = Math.floor(Math.random() * (num2 - num1)) + num1
+console.log(randomNum)  //12
