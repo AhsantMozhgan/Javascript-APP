@@ -1,11 +1,14 @@
-// const tasks = ['Task1', 'Task2', 'Task3', 12, true]
-// console.log(tasks)           //[ 'Task1', 'Task2', 'Task3', 12, true ]
-// console.log(tasks.length)    //5
-// console.log(tasks[1])        //Task2
+const cartItems = ['book1', 'book2', 'book3', 'book4']
+// cartItems.push('book5')
+// cartItems.pop()
+// cartItems.unshift('first Item')     //[ 'first Item', 'book1', 'book2', 'book3', 'book4' ]
+// cartItems.shift()                   //[ 'book1', 'book2', 'book3', 'book4' ]
 
-const cartItems = ['book1', 'book2', 'book3']
+// cartItems.splice(0, 2)   //[ 'book3', 'book4' ]
+// cartItems.splice(1, 2)      //[ 'book1', 'book4' ]
+// cartItems.splice(1, 2, 'New Item')      //[ 'book1', 'New Item', 'book4' ]
+cartItems.splice(0, 2, 'New Item')      //[ 'New Item', 'book3', 'book4' ]
 
-let res = `You have ${cartItems.length} products in your cart.`
-console.log(`First item is: ${cartItems[0]}`)
-console.log(`Last item is: ${cartItems[cartItems.length - 1]}`)
-console.log(res)
+cartItems[2] = 'New Item'   //[ 'New Item', 'book3', 'New Item' ]      
+
+console.log(cartItems)
