@@ -1,13 +1,8 @@
-// const p = document.querySelector('p')
-// // console.log(p)
+// how does this JavaScript code remove 'JS' from certain paragraphs from a webpage(web-app)?
+const paragraphs = document.querySelectorAll('p')
 
-// p.remove()
-
-const ps = document.querySelectorAll('p')
-// console.log(ps)
-
-ps.forEach(function(item) {
-    // item.remove()
-    // console.log(item.textContent)
-    item.textContent = 'Update p'
+paragraphs.forEach(function(item) {
+    if (item.textContent.includes('JS')) {
+        item.remove()
+    }
 })
