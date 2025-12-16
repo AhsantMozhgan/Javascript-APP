@@ -1,14 +1,25 @@
-// 1. Select the first <button> element on the page.
-//    document.querySelector('button') grabs the first button it finds in the HTML document.
-document.querySelector('button').addEventListener('click', function(e) {
+// 1. Select the button with the ID "add-product" and listen for a click event.
+//    When this button is clicked, the function runs and logs a message in the console.
+document.querySelector('#add-product').addEventListener('click', function(e) {
+    console.log('Product Created!')
+    // This simulates an action — like creating or adding a new product.
+    // In a real app, this could also add a new <div> or <p> element to the page.
+})
 
-    // 2. This function runs every time the button is clicked.
-    //    The 'e' parameter represents the event object that gives details about the click (like which element was clicked).
-    
-    // console.log(e) // (Optional) You can uncomment this to inspect the event details in the browser console.
 
-    // 3. Change the text displayed on the button.
-    //    e.target refers to the HTML element that triggered the event — here, the button.
-    //    Setting textContent replaces the button’s text with 'New Value'.
-    e.target.textContent = 'New Value'
+// 2. Select the button with the ID "remove-all-products" and listen for a click event.
+//    When clicked, this event handler removes all elements with the class "product".
+document.querySelector('#remove-all-products').addEventListener('click', function(e) {
+
+    // Optional debug message to confirm the button was clicked.
+    // console.log('Product Removed!')
+
+    // 3. Select all elements that have the class "product".
+    //    querySelectorAll('.product') returns a NodeList of all matching elements.
+    document.querySelectorAll('.product').forEach(function(item) {
+        
+        // 4. Loop through each selected element and remove it from the DOM.
+        //    The remove() method deletes the element completely from the webpage.
+        item.remove()
+    })
 })
