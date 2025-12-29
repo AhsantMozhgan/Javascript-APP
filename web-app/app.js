@@ -1,5 +1,5 @@
 // Define an array of product objects, each containing a 'title' key.
-// This acts as our data source to be filtered and displayed.
+// This is the data source that will be shown and filtered on the page.
 const products = [{
     title: 'Node js Design Patterns'
 }, {
@@ -10,37 +10,50 @@ const products = [{
     title: 'You Dont Know JS: Async & Performance'
 }]
 
-// Define an object to store filter information.
-// Currently, it only has 'searchItem', representing the user’s search query.
+// Define an object to store the current filter state.
+// 'searchItem' will always hold whatever the user has typed in the search box.
 const filters = {
     searchItem: ''
 }
 
-// Define a function that takes 'products' and 'filters' 
-// and logs the products that match the search term.
+// Define a function that:
+// 1) filters products according to the search text
+// 2) clears the current list in the DOM
+// 3) renders the filtered products on the page.
 const renderProducts = function(products, filters) {
-    // The 'filter()' method loops through all products.
-    // For each product, it checks whether its title (converted to lowercase)
-    // includes the current search term (also in lowercase).
-    // This makes the search case-insensitive.
+    // Use Array.prototype.filter to create a new array that contains
+    // only the products whose title includes the search text.
+    // Both strings are converted to lowercase so the match is case-insensitive.
     const filteredProducts = products.filter(function(item) {
         return item.title.toLowerCase().includes(filters.searchItem.toLowerCase())
     })
 
-    // Display the filtered list in the console.
-    // In a real application, this is where you might update the DOM instead.
-    console.log(filteredProducts)
+    // Clear any previously rendered products inside the element with id="products".
+    // This ensures we do not keep old results when re-rendering.
+    document.querySelector('#products').innerHTML = ''
+
+    // For each product in the filtered list:
+    // - create a <p> element
+    // - set its text to the product title
+    // - append it to the #products container so it appears on the page.
+    filteredProducts.forEach(function(item) {
+        const productEl = document.createElement('p')
+        productEl.textContent = item.title
+        document.querySelector('#products').appendChild(productEl)
+    })
 }
 
-// Call 'renderProducts' initially to show all products before any search input.
+// Call renderProducts once at the beginning so that all products
+// are shown before the user types anything.
 renderProducts(products, filters)
 
-// Add an event listener to the search input field in the DOM.
-// Each time the user types into this field ('input' event),
-// the filter’s 'searchItem' value updates with the current input,
-// and the product list is re-rendered to reflect the new search.
+// Attach an input event listener to the search box (id="search-products").
+// The 'input' event fires on every keystroke, so the list updates live as the user types.
 document.querySelector('#search-products').addEventListener('input', function(e) {
+    // Update the filter state with the current value of the input field.
     filters.searchItem = e.target.value
+
+    // Re-run the rendering logic using the updated search text,
+    // which re-filters the products and re-draws the list in the DOM.
     renderProducts(products, filters)
 })
-
