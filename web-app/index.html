@@ -1,19 +1,38 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 
+        Why these meta tags? (highly recommended even in simple projects)
+        - charset=UTF-8: Prevents garbled special characters (e.g., Persian/Arabic text)
+        - viewport: Ensures mobile devices don't zoom out weirdly → responsive by default
+    -->
+    <title>Book Store</title>
+</head>
+<body>
+    <h1>Book Store</h1>
 
-<html>
-    <head>
-        <title>Book Store</title>
-    </head>
-    <body>
-        <h1>Book Store</h1>
-        <label>
-            <input id="checkbox" type="checkbox">Checkbox
-        </label>
+    <!-- 
+        Sort dropdown: lets user choose how to order the product list
+        Why <select> instead of radio buttons or custom UI?
+        → Native, accessible, keyboard-friendly, familiar to users, no extra CSS/JS needed for basic behavior
+        Options are clear and descriptive → good UX (avoid vague labels like "Option 1")
+    -->
+    <select id="sort" aria-label="Sort products by">
+        <option value="byEdited">Sort by edited (last modified first)</option>
+        <option value="byCreated">Sort by recently created (newest first)</option>
+        <!-- 
+            Tip: Add selected="selected" to the default option you want pre-chosen
+            e.g. <option value="byCreated" selected>...
+        -->
+    </select>
 
-        <script src="app.js"></script>
-    </body>
+    <!-- 
+        External script: separation of concerns (HTML = structure, JS = behavior)
+        Placed at end of <body> → HTML renders first → faster perceived load time
+        No type="module" yet → plain global script (simple for beginners)
+    -->
+    <script src="app.js"></script>
+</body>
 </html>
-
-<!-- install Node -->
-<!-- I typed in the terminal: sudo npm install -g live-server@1.2.0 -->
-<!-- I typed in the terminal: live-server web-app -->
