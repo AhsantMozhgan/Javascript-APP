@@ -131,7 +131,7 @@ const createProductDOM = function(product) {
     // → No need for event delegation or data-id attributes
     checkbox.addEventListener('change', function(e) {
         toggleProduct(product.id)
-        saveProducts(products)          // persist the toggle immediately
+        saveProducts(product)          // persist the toggle immediately
         renderProducts(products, filters) // refresh UI
     })
 
