@@ -1,3 +1,5 @@
+console.log(uuidv4())
+
 // Helper: Load products from localStorage or return empty array
 const getSaveProducts = function() {
     // Attempt to load previously saved products

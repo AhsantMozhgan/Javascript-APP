@@ -34,6 +34,7 @@ document.querySelector('#add-product-form').addEventListener('submit', function(
     
     // Add new item to array
     products.push({
+        id: uuidv4(),
         title: e.target.elements.productTitle.value,
         exist: true   // New products are always "available" by default
     })
