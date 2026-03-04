@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- 
-        Why include these meta tags in almost every project?
-        - charset=UTF-8: Ensures special characters (like Persian, emojis, accents) display correctly
-        - viewport: Prevents mobile browsers from zooming out oddly → makes page responsive by default
-        Without them → text may look broken on phones or with non-English content
+        These two meta tags are now standard best practice in 2025–2026
+        - charset=UTF-8 → handles Persian/Farsi, Arabic, emojis, etc. correctly
+        - viewport → mobile devices display page at proper scale (no awkward zoom)
     -->
     <title>Book Store</title>
 </head>
@@ -15,10 +14,10 @@
     <h1>Book Store</h1>
 
     <!-- 
-        External JS file: Keeps HTML clean (structure only) and JS separate (behavior only)
-        Why place <script> at the end of <body>?
-        → HTML content loads & renders first → page feels faster
-        → DOM elements (like future buttons/inputs) exist when JS runs
+        Why <script> at bottom of body (not in head)?
+        1. HTML renders first → user sees content faster (better perceived performance)
+        2. DOM is fully built when JS runs → no need for DOMContentLoaded / window.onload
+        3. Separation of concerns: HTML = structure, JS = behavior
     -->
     <script src="app.js"></script>
 </body>
