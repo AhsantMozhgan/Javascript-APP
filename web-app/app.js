@@ -33,8 +33,9 @@ document.querySelector('#add-product-form').addEventListener('submit', function(
     e.preventDefault()   // Stop page reload → keeps app feeling smooth (single-page-like)
     
     // Add new item to array
+    const id = uuidv4()
     products.push({
-        id: uuidv4(),
+        id: id,
         title: e.target.elements.productTitle.value,
         exist: true   // New products are always "available" by default
     })
