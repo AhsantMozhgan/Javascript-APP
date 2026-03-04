@@ -1,3 +1,9 @@
+// Quick test / demo line (can be removed later)
+// Why console.log(uuidv4()) ?
+// → Probably testing if the uuid library is loaded or available
+// → uuidv4() generates a unique random ID (v4 = random-based)
+// → Useful when you plan to add unique .id to each product
+// → Note: this line will throw an error unless you have included uuid library (e.g. <script src="https://cdn.jsdelivr.net/npm/uuid@latest/dist/umd/uuidv4.min.js"></script>)
 console.log(uuidv4())
 
 // Helper: Load products from localStorage or return empty array
@@ -6,115 +12,127 @@ const getSaveProducts = function() {
     const productJSON = localStorage.getItem('products')
     
     // Why check !== null ?
-    // → localStorage.getItem returns null when no data was saved yet
-    //   (first time visiting the page, storage cleared, incognito mode without persistence, etc.)
-    // → Trying JSON.parse(null) would throw "Unexpected token n in JSON at position 0"
-    // → This guard clause prevents the entire app from crashing on first load
+    // → localStorage.getItem returns null when no data exists yet
+    //   (first visit, storage cleared, incognito without persistence, etc.)
+    // → JSON.parse(null) would crash with SyntaxError → this prevents the app from breaking
     if (productJSON !== null) {
         return JSON.parse(productJSON)
         // Why JSON.parse?
-        // → localStorage always returns a string (or null)
-        // → JSON.parse converts the stored string '[{"title":"Book1","exist":true},...]' 
-        //   back into a real JavaScript array of objects
-        // → After this line, we can use .push(), .filter(), etc. normally
+        // → localStorage stores data as strings only
+        // → This converts the saved JSON string back into a real array of objects
+        // → After parse → products is usable with .push(), .filter(), .findIndex(), etc.
     } else {
         return []
-        // Why return [] instead of undefined or null?
-        // → Guarantees consistent return type: always an array
-        // → Prevents downstream errors (e.g. products.push() would fail on undefined)
-        // → Makes calling code simpler — no extra null checks needed
+        // Why return [] instead of undefined/null?
+        // → Always returns the same type (array) → no extra null checks needed elsewhere
+        // → Prevents runtime errors when calling products.push() or .filter() on undefined
     }
 }
 
 // Helper: Save products array to localStorage
 const saveProducts = function(products) {
     // Why JSON.stringify?
-    // → localStorage.setItem only accepts strings as values
-    // → Without stringify → you'd store "[object Object]" (useless)
-    // → JSON.stringify turns the array into a proper JSON string that can be parsed later
+    // → localStorage.setItem only accepts strings
+    // → Without stringify → it would save "[object Object]" (useless data)
+    // → Turns array into proper JSON string that can be parsed later
     localStorage.setItem('products', JSON.stringify(products))
     
-    // Why no try/catch around setItem?
-    // → In small learning projects it's often skipped for simplicity
-    // → In real applications you would wrap it in try/catch because:
-    //   - quota exceeded (storage full)
-    //   - private browsing may block persistence
-    //   - some browsers throw in certain security contexts
-    // → For now it's fine — errors are rare in local dev
+    // Why no try/catch?
+    // → In beginner/learning projects it's common to omit for simplicity
+    // → In real apps you should add try { ... } catch (err) { console.error(err) }
+    //   because setItem can fail (storage quota exceeded, private mode, security policy)
 }
 
-// Main rendering function: filters data → clears old UI → rebuilds product list
+// New function: Remove a product by its id
+const removeProduct = function(id) {
+    // Find the index of the product with matching id
+    // Why .findIndex() instead of .find() ?
+    // → .findIndex() returns the numeric position → perfect for .splice()
+    // → .find() would return the object itself → you'd still need another loop to remove
+    const productIndex = products.findIndex(function(item) {
+        return item.id === id
+        // Assumes every product has a unique .id property (e.g. from uuidv4())
+    })
+    
+    // Why check productIndex > -1 ?
+    // → .findIndex() returns -1 if nothing matches → prevents splice(-1) error
+    if (productIndex > -1) {
+        products.splice(productIndex, 1)
+        // .splice(index, 1) removes exactly one item at that position
+        // Why mutate the array directly?
+        // → Simple & efficient for small lists
+        // → products is a global variable → changes are immediately visible
+    }
+    // Note: no return value → this is a side-effect function (mutates products)
+}
+
+// Main rendering function: filters → clears old UI → rebuilds product list
 const renderProducts = function(products, filters) {
     // First filter: match search text (case-insensitive)
-    // Why .toLowerCase() on both sides?
-    // → Users expect case-insensitive search ("book" should find "Book1", "BOOK", etc.)
-    // → Very common UX pattern in search features
+    // Why .toLowerCase() twice?
+    // → Ensures "Book" matches "book", "BOOK", "bOoK" → user-friendly search
     let filteredProducts = products.filter(function(item) {
         return item.title.toLowerCase().includes(filters.searchItem.toLowerCase())
     })
 
-    // Second filter: show only available products when checkbox is checked
-    // Why separate .filter() calls instead of one combined condition?
-    // → Much more readable and maintainable
-    // → Easier to debug (you can log filteredProducts after each step)
-    // → Simple to add more filters later without creating a monster condition
+    // Second filter: only available products if checkbox checked
+    // Why separate filters?
+    // → Very readable & debuggable
+    // → Easy to add more filters (price, category, date) without messy code
     filteredProducts = filteredProducts.filter(function(item) {
         if (filters.availableProducts) {
-            return item.exist   // only keep items where exist === true
-            // Note: since exist is boolean, returning it directly is clean & idiomatic
-            // No need for return item.exist === true
+            return item.exist   // boolean → direct return is clean
         } else {
-            return true         // no restriction — show every item
+            return true         // show everything
         }
     })
     
     // Clear previous content
     // Why innerHTML = '' ?
-    // → Fastest & simplest way to remove all children for small-to-medium lists
-    // → Without clearing → every re-render would append duplicates endlessly
+    // → Fastest & simplest way to remove all children
+    // → Without this → duplicates would accumulate on every re-render
     document.querySelector('#products').innerHTML = ''
     
-    // Why use createProductDOM instead of creating elements inline here?
-    // → Separation of concerns: renderProducts handles filtering & loop logic
-    // → createProductDOM owns the structure of one item → easier to change layout later
-    // → Makes code modular: you can test or reuse createProductDOM independently
+    // Render each filtered item using helper
+    // Why delegate to createProductDOM?
+    // → Keeps renderProducts focused on logic & flow
+    // → createProductDOM owns the HTML structure → easy to change layout
     filteredProducts.forEach(function(item) {
         document.querySelector('#products').appendChild(createProductDOM(item))
     })
 }
 
-// Helper: Create DOM structure for one product item
+// Helper: Create full DOM element for one product (with remove functionality)
 const createProductDOM = function(product) {
-    // Create main container for the product row
     const productEl = document.createElement('div')
-    // Why <div> instead of <p>?
-    // → More flexible container — allows multiple child elements (checkbox, text, button)
-    // → Better semantics for a list item with interactive parts
-
-    // Create checkbox (future use: toggle availability, select for bulk delete, etc.)
     const checkbox = document.createElement('input')
+    const productItem = document.createElement('span')
+    const removeButton = document.createElement('button')
+
     checkbox.setAttribute('type', 'checkbox')
     productEl.appendChild(checkbox)
-    // Why add checkbox now even if not wired up?
-    // → Prepares the UI for future features without changing layout later
-    // → Keeps visual consistency when you add event listeners
+    // Why checkbox?
+    // → Future feature placeholder (toggle exist?, select multiple?)
+    // → Already in layout → no need to restructure DOM later
 
-    // Create span for the product title
-    const productItem = document.createElement('span')
     productItem.textContent = product.title
     productEl.appendChild(productItem)
-    // Why <span> for title?
-    // → Inline element → good for flowing with checkbox & button
-    // → .textContent is safe (escapes HTML) → protects against XSS if titles come from users
 
-    // Create remove button
-    const removeButton = document.createElement('button')
     removeButton.textContent = 'Remove'
     productEl.appendChild(removeButton)
-    // Why add remove button now?
-    // → Sets up the UI for the next logical feature (deleting products)
-    // → You can add event listener later without restructuring DOM
-
-    // Return the complete element so renderProducts can append it
+    
+    // Wire up the remove button immediately
+    // Why addEventListener here inside createProductDOM?
+    // → Each button gets its own listener with closure access to the current product.id
+    // → No need for event delegation or data attributes
+    // → Simple and works well for small-to-medium lists
+    removeButton.addEventListener('click', function() {
+        removeProduct(product.id)
+        // After removal → save to localStorage immediately
+        saveProducts(products)
+        // After removal → re-render the filtered list
+        renderProducts(products, filters)
+    })
+    
     return productEl
 }
