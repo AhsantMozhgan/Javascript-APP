@@ -1,53 +1,103 @@
-// ────────────────────────────────────────────────
-// Commented-out part: example of how to SAVE an object to localStorage
-// ────────────────────────────────────────────────
-// const product = {
-//     title: 'Book',
-//     price:79
-// }
-// Why create an object first?
-// → localStorage is often used to save structured data (not just single strings)
+// Pre-filled products array for testing / demo
+// Why start with some data?
+// → Makes the page useful immediately (you see something without adding manually)
+// → Good for testing search + filter features right away
+const products = [{
+    title: 'Book1',
+    exist: true
+}, {
+    title: 'Book2',
+    exist: false
+}, {
+    title: 'Book3',
+    exist: true
+}, {
+    title: 'Book4',
+    exist: false
+}]
 
-// const productJSON = JSON.stringify(product)
-// Why JSON.stringify() is necessary:
-// → localStorage can ONLY store strings
-// → without stringify → saving object directly would save "[object Object]" (useless)
-// → JSON.stringify turns the object into a proper string: '{"title":"Book","price":79}'
+// Single object that holds all current filter settings
+// Why one object instead of separate variables?
+// → Easy to pass all filters together to render function
+// → Simple to add more filters later (price range, category, etc.)
+const filters = {
+    searchItem: '',
+    availableProducts: false
+    // Why false by default? → Show all products initially (most common UX expectation)
+}
 
-// console.log(productJSON)
-// → helpful during development to verify what is actually being saved
+// Main function: filters data → updates the page
+const renderProducts = function(products, filters) {
+    // First filter: match search text (case-insensitive)
+    // Why .toLowerCase() on both sides?
+    // → Makes search ignore case ("book" finds "Book1")
+    let filteredProducts = products.filter(function(item) {
+        return item.title.toLowerCase().includes(filters.searchItem.toLowerCase())
+    })
 
-// localStorage.setItem('product', productJSON)
-// Why 'product' as key?
-// → clear, descriptive name → easy to understand what this item contains
-// → setItem(key, value) is the standard method to store data
-// ────────────────────────────────────────────────
+    // Second filter: only available products if checkbox is checked
+    // Why separate filter call?
+    // → Easier to read and debug than one big complex condition
+    filteredProducts = filteredProducts.filter(function(item) {
+        if (filters.availableProducts) {
+            return item.exist   // only keep items where exist is true
+            // Note: item.exist is boolean, so return item.exist works directly
+        } else {
+            return true         // no filtering → show everything
+        }
+    })
+    
+    // Clear old content before adding new
+    // Why necessary?
+    // → Prevents duplicate items piling up every time we re-render
+    document.querySelector('#products').innerHTML = ''
+    
+    // Create one <p> element per filtered product
+    // Why document.createElement + .textContent?
+    // → Safer than innerHTML (protects against XSS if titles ever come from users)
+    // → Clean and modern DOM manipulation
+    filteredProducts.forEach(function(item) {
+        const productEl = document.createElement('p')
+        productEl.textContent = item.title
+        document.querySelector('#products').appendChild(productEl)
+    })
+}
 
+// Show initial list when page loads (with pre-filled products)
+renderProducts(products, filters)
 
-// ────────────────────────────────────────────────
-// Active code: how to READ and RESTORE data from localStorage
-// ────────────────────────────────────────────────
-const productJSON = localStorage.getItem('product')
-// How getItem works:
-// → returns the stored string if key exists
-// → returns null if key does not exist (e.g. first visit, storage cleared)
+// Live search: re-filter every time user types
+// Why 'input' event instead of 'keyup'?
+// → Catches paste, voice input, drag-drop — more complete user interactions
+document.querySelector('#search-products').addEventListener('input', function(e) {
+    filters.searchItem = e.target.value
+    // Why no .trim() here?
+    // → Allows searching with leading/trailing spaces (intentional in this version)
+    renderProducts(products, filters)
+})
 
-// Why store the result in a variable?
-// → makes code easier to read and debug
-// → allows checking / parsing in next step
+// Handle form submission (adding new product)
+document.querySelector('#add-product-form').addEventListener('submit', function(e) {
+    e.preventDefault()   // Stop page reload → keeps app feeling smooth
+    
+    // Add new item to array
+    products.push({
+        title: e.target.elements.productTitle.value,
+        exist: true   // New products are always "available" by default
+    })
+    
+    // Update display immediately
+    renderProducts(products, filters)
+    
+    // Clear input field → ready for next entry
+    e.target.elements.productTitle.value = ''
+    // Nice UX touch: user can keep typing without clicking again
+})
 
-const product = JSON.parse(productJSON)
-// How JSON.parse works:
-// → converts valid JSON string back into real JavaScript object
-// → after this line, product.title and product.price can be accessed normally
-
-// Why no safety check here? (potential issue)
-// → if productJSON is null → JSON.parse(null) throws an error → script stops
-// → in learning examples this is acceptable, but in real apps you should add:
-// if (productJSON) { ... } + try { ... } catch { ... }
-
-console.log(`Title: ${product.title} - Price: ${product.price}`)
-// Why template literal (`${}`) instead of + concatenation?
-// → much more readable and less error-prone
-// → modern JavaScript style (ES6+)
-// → output example: Title: Book - Price: 79
+// Checkbox toggle: show/hide unavailable products
+// Why 'change' event?
+// → Fires exactly when checkbox state changes (checked ↔ unchecked)
+document.querySelector('#available-products').addEventListener('change', function(e) {
+    filters.availableProducts = e.target.checked
+    renderProducts(products, filters)
+})

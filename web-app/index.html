@@ -1,24 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 
-        These two meta tags are now standard best practice in 2025–2026
-        - charset=UTF-8 → handles Persian/Farsi, Arabic, emojis, etc. correctly
-        - viewport → mobile devices display page at proper scale (no awkward zoom)
-    -->
-    <title>Book Store</title>
-</head>
-<body>
-    <h1>Book Store</h1>
 
-    <!-- 
-        Why <script> at bottom of body (not in head)?
-        1. HTML renders first → user sees content faster (better perceived performance)
-        2. DOM is fully built when JS runs → no need for DOMContentLoaded / window.onload
-        3. Separation of concerns: HTML = structure, JS = behavior
-    -->
-    <script src="app.js"></script>
-</body>
+<html>
+    <head>
+        <title>Book Store</title>
+        <!-- 
+            Why no <meta charset="UTF-8"> and <meta name="viewport">?
+            → For very simple local learning projects it's not strictly required,
+            → but in real-world apps these two lines prevent garbled text (especially Persian/Farsi) 
+               and make the page look correct on mobile phones.
+            → You can safely add them later without breaking anything.
+        -->
+    </head>
+    <body>
+        <h1>Book Store</h1>
+
+        <!-- Search field: allows live filtering of the product list -->
+        <input type="text" id="search-products" placeholder="Search...">
+        <!-- 
+            Why id="search-products"?
+            → Clear, descriptive name → easy to select with document.querySelector later
+            Why placeholder?
+            → Gives hint to user what to do → improves usability
+        -->
+
+        <!-- Checkbox to toggle "show only available (exist: true) products" -->
+        <label>
+            <input type="checkbox" id="available-products">Available Products
+            <!-- 
+                Why <label> wraps the input + text?
+                → Clicking the text also toggles the checkbox → better accessibility & UX
+                Why id on checkbox?
+                → Lets us easily listen for changes in JavaScript
+            -->
+        </label>
+
+        <!-- Container where filtered product titles will appear dynamically -->
+        <div id="products"></div>
+        <!-- 
+            Why empty <div> with id?
+            → Acts as a placeholder → JavaScript will insert <p> elements here
+            → Using id makes it very easy to target with querySelector
+        -->
+
+        <!-- Form for adding new products -->
+        <form id="add-product-form">
+            <input type="text" name="productTitle" placeholder="Add Product...">
+            <!-- 
+                Why name="productTitle"?
+                → Allows easy access via e.target.elements.productTitle in submit handler
+                Why no required attribute?
+                → Optional here, but adding it later prevents empty submissions
+            -->
+            <button>Add Product</button>
+        </form>
+
+        <!-- 
+            External JavaScript file
+            Why separate file instead of <script> inside HTML?
+            → Separation of concerns: HTML = structure, JS = logic → easier to read/maintain
+            Why at the end of body?
+            → DOM is fully loaded when script runs → no need for onload events
+        -->
+        <script src="app.js"></script>
+    </body>
 </html>
