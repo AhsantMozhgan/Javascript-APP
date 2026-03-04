@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
     <head>
         <title>Book Store</title>
@@ -26,7 +25,7 @@
         <!-- Checkbox to toggle "show only available (exist: true) products" -->
         <label>
             <input type="checkbox" id="available-products">Available Products
-            <!-- 
+            <!--
                 Why <label> wraps the input + text?
                 → Clicking the text also toggles the checkbox → better accessibility & UX
                 Why id on checkbox?
@@ -45,7 +44,7 @@
         <!-- Form for adding new products -->
         <form id="add-product-form">
             <input type="text" name="productTitle" placeholder="Add Product...">
-            <!-- 
+            <!--
                 Why name="productTitle"?
                 → Allows easy access via e.target.elements.productTitle in submit handler
                 Why no required attribute?
@@ -55,12 +54,15 @@
         </form>
 
         <!-- 
-            External JavaScript file
-            Why separate file instead of <script> inside HTML?
-            → Separation of concerns: HTML = structure, JS = logic → easier to read/maintain
-            Why at the end of body?
-            → DOM is fully loaded when script runs → no need for onload events
+            External JavaScript files
+            Why two separate files?
+            → Separation of concerns: function.js = reusable helpers & render logic
+            → app.js = main app flow, event listeners, business logic
+            → Easier to read, test, and maintain as project grows
+            Why function.js first?
+            → renderProducts and createProductDOM must be defined before they are called in app.js
         -->
+        <script src="function.js"></script>
         <script src="app.js"></script>
     </body>
 </html>

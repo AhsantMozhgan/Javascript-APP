@@ -1,12 +1,13 @@
-// Array to store all products – starts empty
-// Why let instead of const?
-// → We will modify the array (push new items) so we need a variable that can be reassigned
-let products = []
+// Load products using helper function from function.js
+// Why not load directly here?
+// → Keeps app.js clean and focused on application flow
+// → Reuses the same loading logic everywhere → single source of truth
+let products = getSaveProducts()
 
 // Single object that holds all current filter settings
 // Why one object instead of separate variables?
 // → Easy to pass all filters together to render function
-// → Simple to add more filters later (price range, category, etc.)
+// → Simple to add more filters later (price range, category, sort order, etc.)
 const filters = {
     searchItem: '',
     availableProducts: false
@@ -14,54 +15,7 @@ const filters = {
     // → Show all products initially (most common and intuitive UX expectation)
 }
 
-// Attempt to load previously saved products from localStorage
-const productJSON = localStorage.getItem('products')
-// Why check !== null ?
-// → localStorage.getItem returns null when the key doesn't exist (first visit, cleared storage, etc.)
-if (productJSON !== null) {
-    products = JSON.parse(productJSON)
-    // Why JSON.parse?
-    // → localStorage only stores strings → we convert the saved JSON string back to real array of objects
-}
-
-// Main function: filters data → clears old content → renders new list on page
-const renderProducts = function(products, filters) {
-    // First filter: match search text (case-insensitive)
-    // Why .toLowerCase() on both sides?
-    // → Makes search ignore case ("book" finds "Book1", "BOOK", etc.)
-    let filteredProducts = products.filter(function(item) {
-        return item.title.toLowerCase().includes(filters.searchItem.toLowerCase())
-    })
-
-    // Second filter: only available products if checkbox is checked
-    // Why separate filter call?
-    // → Easier to read, debug, and extend than one big complex condition
-    filteredProducts = filteredProducts.filter(function(item) {
-        if (filters.availableProducts) {
-            return item.exist   // only keep items where exist is true
-            // Note: item.exist is boolean → return item.exist works directly (no need === true)
-        } else {
-            return true         // no filtering → show everything
-        }
-    })
-    
-    // Clear old content before adding new
-    // Why necessary?
-    // → Prevents duplicate <p> elements piling up every time we re-render
-    document.querySelector('#products').innerHTML = ''
-    
-    // Create one <p> element per filtered product
-    // Why document.createElement + .textContent?
-    // → Safer than innerHTML (protects against XSS if titles ever come from users)
-    // → Clean and modern DOM manipulation
-    filteredProducts.forEach(function(item) {
-        const productEl = document.createElement('p')
-        productEl.textContent = item.title
-        document.querySelector('#products').appendChild(productEl)
-    })
-}
-
-// Show initial list when page loads (either empty or from localStorage)
+// Show initial list when page loads (either empty or restored from storage)
 renderProducts(products, filters)
 
 // Live search: re-filter every time user types/pastes
@@ -84,10 +38,11 @@ document.querySelector('#add-product-form').addEventListener('submit', function(
         exist: true   // New products are always "available" by default
     })
 
-    // Save updated array to localStorage after every change
-    // Why JSON.stringify?
-    // → localStorage only accepts strings → we convert array → JSON string
-    localStorage.setItem('products', JSON.stringify(products))
+    // Persist the updated list immediately
+    // Why call saveProducts right after push?
+    // → Ensures data survives refresh / close / reopen
+    // → Keeps storage in sync with memory
+    saveProducts(products)
 
     // Update display immediately
     renderProducts(products, filters)
