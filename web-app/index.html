@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- 
-        Why these meta tags? (highly recommended even in simple projects)
-        - charset=UTF-8: Prevents garbled special characters (e.g., Persian/Arabic text)
-        - viewport: Ensures mobile devices don't zoom out weirdly → responsive by default
+        Why include these meta tags in almost every project?
+        - charset=UTF-8: Ensures special characters (like Persian, emojis, accents) display correctly
+        - viewport: Prevents mobile browsers from zooming out oddly → makes page responsive by default
+        Without them → text may look broken on phones or with non-English content
     -->
     <title>Book Store</title>
 </head>
@@ -14,24 +15,10 @@
     <h1>Book Store</h1>
 
     <!-- 
-        Sort dropdown: lets user choose how to order the product list
-        Why <select> instead of radio buttons or custom UI?
-        → Native, accessible, keyboard-friendly, familiar to users, no extra CSS/JS needed for basic behavior
-        Options are clear and descriptive → good UX (avoid vague labels like "Option 1")
-    -->
-    <select id="sort" aria-label="Sort products by">
-        <option value="byEdited">Sort by edited (last modified first)</option>
-        <option value="byCreated">Sort by recently created (newest first)</option>
-        <!-- 
-            Tip: Add selected="selected" to the default option you want pre-chosen
-            e.g. <option value="byCreated" selected>...
-        -->
-    </select>
-
-    <!-- 
-        External script: separation of concerns (HTML = structure, JS = behavior)
-        Placed at end of <body> → HTML renders first → faster perceived load time
-        No type="module" yet → plain global script (simple for beginners)
+        External JS file: Keeps HTML clean (structure only) and JS separate (behavior only)
+        Why place <script> at the end of <body>?
+        → HTML content loads & renders first → page feels faster
+        → DOM elements (like future buttons/inputs) exist when JS runs
     -->
     <script src="app.js"></script>
 </body>
