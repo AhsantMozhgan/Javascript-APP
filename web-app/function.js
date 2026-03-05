@@ -97,11 +97,24 @@ const sortProduct = function(products, sortBy) {
                 return 0
             }
         })
+    } else if(sortBy === 'byCreated') {
+        return products.sort(function(a,b) {
+            // Sort descending (newest first)
+            // Why a.created > b.created → -1 ?
+            // → If a was created more recently → put a before b
+            if (a.created > b.created) {
+                return -1
+            } else if (a.created < b.created) {
+                return 1
+            } else {
+                return 0
+            }
+        })
     } else {
         return products
-        // Default: no sorting (or could return copy if needed)
+        // Default case: no sorting → return original array
         // Why return products directly?
-        // → Preserves original order when sortBy is not 'byEdited'
+        // → Preserves current order when no valid sortBy is selected
     }
 }
 
@@ -109,8 +122,9 @@ const sortProduct = function(products, sortBy) {
 const renderProducts = function(products, filters) {
     // Apply sorting first (modifies products in place)
     // Why sort before filtering?
-    // → Sorting should apply to full list → then filter the sorted result
+    // → Sorting should apply to the full list → then filter the sorted result
     // → Ensures correct order even when filtering is active
+    // → Note: products.sort() mutates the array → that's intentional here
     products = sortProduct(products, filters.sortBy)
     
     // First filter: case-insensitive title search
