@@ -128,3 +128,65 @@ document.querySelector('#sort').addEventListener('change', function(e) {
     // → Instantly re-sort and re-display list → responsive sorting
     // → Uses current search/filter state + new sort order
 })
+
+
+
+
+
+// arrow-function
+// const productName = (title) => {
+//     return title
+// }
+// Why this full syntax with parentheses and curly braces?
+// → Explicit: clearly shows parameter list and return statement
+// → Useful when function has multiple lines or needs more logic later
+
+//or
+// const productName = title => title
+// Why this shorter syntax?
+// → Arrow function implicit return: single expression → no need for {} or return keyword
+// → Very concise & common in modern JS (especially for simple transformations)
+// → Preferred when function is one-liner and immediately used
+
+// console.log(productName('Book'))
+// → Would output: 'Book'
+// Why test like this?
+// → Quick way to verify function works as expected
+
+const productName = [{
+    title: 'Book1',
+    exist: true
+}, {
+    title: 'Book2',
+    exist: false
+}, {
+    title: 'Book3',
+    exist: true
+}]
+// Why named productName (array of objects)?
+// → Descriptive name → clearly shows it contains product data
+// → In real app, better name would be products or productList
+// → Each item has title & exist properties → ready for filtering
+
+// const filteredProducts = products.filter((item) => {
+// return item.exist == true
+// })
+// Why this full syntax with parentheses and curly braces?
+// → Explicit: clearly shows parameter and return
+// → Useful for multi-line filters or when adding more conditions later
+// → == true is redundant (item.exist is boolean) → item.exist is cleaner
+
+//or
+const filteredProducts = productName.filter(item => item.exist == true)
+// Why this shorter syntax?
+// → Arrow function with implicit return → very concise & readable
+// → item => ... is most common pattern in modern JavaScript
+// → item.exist == true → works but better as item.exist (boolean directly)
+// → filter() returns new array containing only items where callback returns true
+
+console.log(filteredProducts)
+// → Expected output: array with two items (Book1 and Book3)
+//   [{title: 'Book1', exist: true}, {title: 'Book3', exist: true}]
+// Why console.log here?
+// → Quick way to verify filtering worked as expected
+// → Shows only products where exist === true
