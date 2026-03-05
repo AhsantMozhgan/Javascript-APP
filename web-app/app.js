@@ -35,7 +35,7 @@ renderProducts(products, filters)
 // Why 'input' event instead of 'keyup' / 'keydown'?
 // → Catches paste, voice input, drag-drop, IME composition (e.g. Persian typing)
 // → More complete user interactions than keyup/keydown alone
-document.querySelector('#search-products').addEventListener('input', function(e) {
+document.querySelector('#search-products').addEventListener('input', (e) => {
     filters.searchItem = e.target.value
     // Why no .trim() here?
     // → Allows searching with leading/trailing spaces (intentional in this version)
@@ -46,7 +46,7 @@ document.querySelector('#search-products').addEventListener('input', function(e)
 })
 
 // Handle form submission (adding new product)
-document.querySelector('#add-product-form').addEventListener('submit', function(e) {
+document.querySelector('#add-product-form').addEventListener('submit', (e) => {
     e.preventDefault()   // Stop page reload → keeps app feeling smooth (single-page-like)
     // Why preventDefault()?
     // → Prevents full page refresh → maintains state and fast UX
@@ -94,7 +94,7 @@ document.querySelector('#add-product-form').addEventListener('submit', function(
 // → Fires exactly when checkbox state changes (checked ↔ unchecked)
 // → More precise than 'click' (which can fire on label too)
 // → Standard event for checkboxes
-document.querySelector('#available-products').addEventListener('change', function(e) {
+document.querySelector('#available-products').addEventListener('change', (e) => {
     filters.availableProducts = e.target.checked
     renderProducts(products, filters)
     // Why re-render?
@@ -102,7 +102,7 @@ document.querySelector('#available-products').addEventListener('change', functio
 })
 
 // Listen for storage changes from other tabs/windows
-window.addEventListener('storage', function(e) {
+window.addEventListener('storage', (e) => {
     if (e.key === 'products') {
         products = JSON.parse(e.newValue)
         // Why re-parse e.newValue?
@@ -119,7 +119,7 @@ window.addEventListener('storage', function(e) {
 })
 
 // Listen for sort dropdown changes
-document.querySelector('#sort').addEventListener('change', function(e) {
+document.querySelector('#sort').addEventListener('change', (e) => {
     filters.sortBy = e.target.value
     // Update filters.sortBy with selected value
     // → 'byEdited' or 'byCreated' from <option value>
@@ -129,64 +129,3 @@ document.querySelector('#sort').addEventListener('change', function(e) {
     // → Uses current search/filter state + new sort order
 })
 
-
-
-
-
-// arrow-function
-// const productName = (title) => {
-//     return title
-// }
-// Why this full syntax with parentheses and curly braces?
-// → Explicit: clearly shows parameter list and return statement
-// → Useful when function has multiple lines or needs more logic later
-
-//or
-// const productName = title => title
-// Why this shorter syntax?
-// → Arrow function implicit return: single expression → no need for {} or return keyword
-// → Very concise & common in modern JS (especially for simple transformations)
-// → Preferred when function is one-liner and immediately used
-
-// console.log(productName('Book'))
-// → Would output: 'Book'
-// Why test like this?
-// → Quick way to verify function works as expected
-
-const productName = [{
-    title: 'Book1',
-    exist: true
-}, {
-    title: 'Book2',
-    exist: false
-}, {
-    title: 'Book3',
-    exist: true
-}]
-// Why named productName (array of objects)?
-// → Descriptive name → clearly shows it contains product data
-// → In real app, better name would be products or productList
-// → Each item has title & exist properties → ready for filtering
-
-// const filteredProducts = products.filter((item) => {
-// return item.exist == true
-// })
-// Why this full syntax with parentheses and curly braces?
-// → Explicit: clearly shows parameter and return
-// → Useful for multi-line filters or when adding more conditions later
-// → == true is redundant (item.exist is boolean) → item.exist is cleaner
-
-//or
-const filteredProducts = productName.filter(item => item.exist == true)
-// Why this shorter syntax?
-// → Arrow function with implicit return → very concise & readable
-// → item => ... is most common pattern in modern JavaScript
-// → item.exist == true → works but better as item.exist (boolean directly)
-// → filter() returns new array containing only items where callback returns true
-
-console.log(filteredProducts)
-// → Expected output: array with two items (Book1 and Book3)
-//   [{title: 'Book1', exist: true}, {title: 'Book3', exist: true}]
-// Why console.log here?
-// → Quick way to verify filtering worked as expected
-// → Shows only products where exist === true

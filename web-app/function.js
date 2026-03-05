@@ -7,7 +7,7 @@
 console.log(uuidv4())
 
 // Helper: Load products from localStorage or return empty array
-const getSaveProducts = function() {
+const getSaveProducts = () => {
     // Attempt to load previously saved products
     const productJSON = localStorage.getItem('products')
     
@@ -30,7 +30,7 @@ const getSaveProducts = function() {
 }
 
 // Helper: Save products array to localStorage
-const saveProducts = function(products) {
+const saveProducts = (products) => {
     // Why JSON.stringify?
     // → localStorage.setItem only accepts strings
     // → Without stringify → saves useless "[object Object]" strings
@@ -43,15 +43,13 @@ const saveProducts = function(products) {
 }
 
 // Remove a product by its unique id
-const removeProduct = function(id) {
+const removeProduct = (id) => {
     // Find position of product with matching id
     // Why .findIndex()?
     // → Returns numeric index → perfect for .splice()
     // → .find() would return object → harder to remove from array
-    const productIndex = products.findIndex(function(item) {
-        return item.id === id
-        // Relies on every product having unique .id (from uuidv4())
-    })
+    // Relies on every product having unique .id (from uuidv4())
+    const productIndex = products.findIndex(item => {item.id === id})
     
     // Why check > -1 ?
     // → .findIndex returns -1 if no match → .splice(-1) would be invalid
@@ -64,14 +62,12 @@ const removeProduct = function(id) {
 }
 
 // Toggle the 'exist' property of a product by id
-const toggleProduct = function(id) {
+const toggleProduct = (id) => {
     // Find the product object by id
     // Why .find() instead of .findIndex() here?
     // → We want the object itself to modify .exist
     // → No need for index → direct property change
-    const product = products.find(function(item) {
-        return item.id === id
-    })
+    const product = products.find(item => {item.id === id})
     
     // Why check !== undefined ?
     // → Prevents error if id not found (though unlikely with proper buttons)
@@ -83,9 +79,9 @@ const toggleProduct = function(id) {
 }
 
 // Sort products based on current sort preference
-const sortProduct = function(products, sortBy) {
+const sortProduct = (products, sortBy) => {
     if (sortBy === 'byEdited') {
-        return products.sort(function(a,b) {
+        return products.sort((a,b) => {
             // Sort descending (most recent first)
             // Why a.updated > b.updated → -1 ?
             // → If a was updated more recently → put a before b
@@ -98,7 +94,7 @@ const sortProduct = function(products, sortBy) {
             }
         })
     } else if(sortBy === 'byCreated') {
-        return products.sort(function(a,b) {
+        return products.sort((a,b) => {
             // Sort descending (newest first)
             // Why a.created > b.created → -1 ?
             // → If a was created more recently → put a before b
@@ -119,7 +115,7 @@ const sortProduct = function(products, sortBy) {
 }
 
 // Main rendering function: filters → sorts → clears → rebuilds DOM list
-const renderProducts = function(products, filters) {
+const renderProducts = (products, filters) => {
     // Apply sorting first (modifies products in place)
     // Why sort before filtering?
     // → Sorting should apply to the full list → then filter the sorted result
@@ -130,7 +126,7 @@ const renderProducts = function(products, filters) {
     // First filter: case-insensitive title search
     // Why .toLowerCase() on both?
     // → Users expect "book" to match "Book", "BOOK", "bOoK" → intuitive search
-    let filteredProducts = products.filter(function(item) {
+    let filteredProducts = products.filter((item) => {
         return item.title.toLowerCase().includes(filters.searchItem.toLowerCase())
     })
 
@@ -138,7 +134,7 @@ const renderProducts = function(products, filters) {
     // Why separate filter calls?
     // → Much more readable & debuggable
     // → Easy to add more filters later without messy chaining
-    filteredProducts = filteredProducts.filter(function(item) {
+    filteredProducts = filteredProducts.filter((item) => {
         if (filters.availableProducts) {
             return item.exist   // boolean return is clean & idiomatic
         } else {
@@ -162,7 +158,7 @@ const renderProducts = function(products, filters) {
 }
 
 // Helper: Create full DOM structure for one product
-const createProductDOM = function(product) {
+const createProductDOM = (product) => {
     const productEl = document.createElement('div')
     const checkbox = document.createElement('input')
     const productItem = document.createElement('a')   // <a> for clickable edit link
@@ -211,7 +207,7 @@ const createProductDOM = function(product) {
 }
 
 // Helper: Generate Persian relative time message for last edit
-const lastEditMessage = function(timestamp) {
+const lastEditMessage = (timestamp) => {
     return `Last Edit: ${moment(timestamp).locale('fa').fromNow()}`
     // Why moment(timestamp).locale('fa').fromNow() ?
     // → .fromNow() → "X minutes ago", "2 hours ago", "3 days ago" etc.
