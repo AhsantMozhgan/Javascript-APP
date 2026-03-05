@@ -4,40 +4,56 @@
         <h2>Edit Product</h2>
         <!-- 
             Why <h2>?
-            → Clear page purpose — user knows this is for editing an existing product
-            → Good heading hierarchy (assuming index.html has <h1>)
+            → Clearly communicates page purpose: editing an existing product
+            → Maintains heading hierarchy (assuming main list page uses <h1>)
+        -->
+
+        <!-- Link back to main product list page -->
+        <a href="/index.html">Home</a>
+        <!-- 
+            Why <a> instead of button?
+            → Semantic: it's navigation → <a> is correct for links
+            → Simple, no extra JS needed
+            Why /index.html (absolute path)?
+            → Reliable when file is in same folder or subfolder
+            → ./index.html would also work — both are fine here
         -->
 
         <!-- Input for editing product title -->
         <input type="text" id="product-title" placeholder="Product Title">
         <!-- 
             Why id="product-title"?
-            → Easy to select in JavaScript with querySelector
+            → Consistent naming → easy to select in JS
             Why placeholder?
-            → Gives user a hint what to enter → better UX
+            → Guides user → improves UX even if field is pre-filled
         -->
 
         <!-- Input for editing product price -->
         <input type="text" id="product-price" placeholder="Product Price">
         <!-- 
-            Why type="text" not type="number"?
-            → Simpler for learning — type="number" has spinner/arrows, stricter validation
-            → You can change to type="number" later for better UX
+            Why type="text" (not type="number")?
+            → Simpler for learning phase — avoids spinner UI and strict number validation
+            → You can switch to type="number" later for better input control
             Why id="product-price"?
-            → Matches title pattern → consistent naming
+            → Matches title pattern → consistent and predictable
+        -->
+
+        <!-- Button to delete the current product -->
+        <button id="remove-product">Remove</button>
+        <!-- 
+            Why <button> with id?
+            → Clear action label → good UX
+            → id allows easy event listener attachment
         -->
 
         <!-- 
-            Script loading order is important here
-            Why uuid.js first?
-            → If you later generate or use uuidv4(), it needs to be defined
+            Script loading order matters:
+            1. uuid.js → if you later need uuidv4() on this page
+            2. function.js → provides shared helpers (getSaveProducts, saveProducts, removeProduct, etc.)
+            3. edit-product.js → page-specific logic
         -->
         <script src="uuid.js"></script>
-        
-        <!-- function.js contains getSaveProducts(), saveProducts(), etc. -->
         <script src="function.js"></script>
-        
-        <!-- edit-product.js contains the logic for this page -->
         <script src="edit-product.js"></script>
     </body>
 </html>

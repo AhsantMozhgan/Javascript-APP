@@ -1,47 +1,82 @@
-// Select the title input field
+// Select title input
 const titleElement = document.querySelector('#product-title')
-// Why querySelector with #id ?
-// → Fast & precise — targets the specific element by its unique id
+// Why querySelector('#id')?
+// → Fastest & most reliable way to target unique element by id
 
-// Select the price input field
+// Select price input
 const priceElement = document.querySelector('#product-price')
-// Same reason — clear, reliable DOM access
+// Same reason — consistent, readable DOM access
 
-// Get the product ID from the URL hash
-// location.hash = "#abc123" → substring(1) removes the # → "abc123"
+// Select remove button
+const removeElement = document.querySelector('#remove-product')
+// Why separate variable?
+// → Makes event listener code cleaner & reusable
+
+// Extract product ID from URL hash
+// Example: edit-product.html#abc123 → productId = "abc123"
 const productId = location.hash.substring(1)
-// Why use hash (#) for ID?
-// → Common pattern for single-page apps or simple multi-page setups
-// → No need for query params (?id=abc) or server-side routing
-// → Works perfectly with static files (no backend needed)
+// Why location.hash + substring(1)?
+// → Simple client-side way to pass ID without query params or backend
+// → Works 100% with static files (no server needed)
+// → Common pattern in vanilla JS multi-page apps
 
-// Load all saved products from localStorage
+// Load all products from shared localStorage function
 const products = getSaveProducts()
 // Why reuse getSaveProducts()?
-// → Single source of truth — same loading logic as index.html
-// → Keeps code DRY (Don't Repeat Yourself)
+// → Same data source as main page → true sync across pages
+// → DRY: one loading function for entire app
 
-// Find the product we want to edit by its id
+// Find the product to edit
 const product = products.find(function(item) {
     return item.id === productId
-    // Assumes each product has unique .id (from uuidv4())
+    // Relies on unique .id (from uuidv4())
 })
 
-// If product not found → redirect back to main page
+// Safety check: if product doesn't exist → go back to list
 if (product === undefined) {
     location.assign('/index.html')
-    // Why location.assign() instead of location.href = ... ?
-    // → assign() adds to history → user can go back
-    // → But here it's fine either way — prevents staying on broken edit page
-    // → Good safety net for invalid/missing IDs
+    // Why location.assign()?
+    // → Adds current page to history → user can press back if needed
+    // → Prevents staying on broken/blank edit page
+    // → Good user experience & error handling
 }
 
-// Populate the form fields with current product data
+// Fill form with current values
 titleElement.value = product.title
 // Why .value = ... ?
-// → Fills the input with existing title → user can edit it
+// → Pre-fills input → user sees current data and can edit
 
 priceElement.value = product.price
-// Same idea for price
-// Note: assumes product has .price property
-// → If price is number → it will be converted to string automatically (OK for input)
+// Same idea — works even if price is number (auto-converted to string)
+
+// Auto-save title on every change
+titleElement.addEventListener('input', function(e) {
+    product.title = e.target.value
+    saveProducts(products)
+    // Why 'input' event?
+    // → Real-time saving → changes saved as user types
+    // → No need for "Save" button → modern, frictionless UX
+    // Why saveProducts() every time?
+    // → Immediate persistence → survives refresh/close
+})
+
+// Auto-save price on every change
+priceElement.addEventListener('input', function(e) {
+    product.price = e.target.value
+    saveProducts(products)
+    // Same real-time save pattern as title
+    // Note: if price should be number → parseFloat(e.target.value) later
+})
+
+// Delete product when remove button clicked
+removeElement.addEventListener('click', function(e) {
+    removeProduct(product.id)
+    // Calls shared removeProduct() from function.js
+    saveProducts(products)
+    // Persist deletion immediately
+    location.assign('./index.html')
+    // Redirect back to list → user sees updated list
+    // Why ./index.html (relative)?
+    // → Works if edit page is in same folder
+    // → /index.html (absolute) also fine — both correct here
+})
