@@ -49,7 +49,7 @@ const removeProduct = (id) => {
     // → Returns numeric index → perfect for .splice()
     // → .find() would return object → harder to remove from array
     // Relies on every product having unique .id (from uuidv4())
-    const productIndex = products.findIndex(item => {item.id === id})
+    const productIndex = products.findIndex(item => item.id === id)
     
     // Why check > -1 ?
     // → .findIndex returns -1 if no match → .splice(-1) would be invalid
