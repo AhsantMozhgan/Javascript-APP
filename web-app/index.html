@@ -54,15 +54,20 @@
         </form>
 
         <!-- 
-            External JavaScript files
+            External JavaScript files – order matters!
             Why moment.js from CDN first?
-            → moment is used in app.js → must load before app.js runs
-            Why uuid.js?
-            → Provides uuidv4() for unique IDs when adding products
-            Why function.js before app.js?
-            → app.js calls functions defined in function.js (getSaveProducts, saveProducts, renderProducts, etc.)
+            → app.js uses moment() → must be defined before app.js runs
         -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment-with-locales.min.js" integrity="sha512-4F1cxYdMiAW98oomSLaygEwmCnIP38pb4Kx70yQYqRwLVCs3DbRumfBq82T08g/4LJ/smbFGFpmeFlQgoDccgg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        
+        <!-- jalali-moment for Persian (Jalali/Shamsi) calendar support -->
+        <!-- Why this library? https://github.com/fingerpich/jalali-moment -->
+        <!-- → moment.js doesn't support Persian calendar natively
+            → jalali-moment extends moment with fa locale and jalaali methods
+            → Perfect for displaying dates in Persian format (e.g. ۱۴۰۴/۱۲/۱۵)
+        -->
+        <script src="https://unpkg.com/jalali-moment/dist/jalali-moment.browser.js"></script>
+        
         <script src="uuid.js"></script>
         <script src="function.js"></script>
         <script src="app.js"></script>

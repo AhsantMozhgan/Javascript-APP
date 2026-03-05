@@ -84,7 +84,7 @@ window.addEventListener('storage', function(e) {
 })
 
 // ────────────────────────────────────────────────
-// Moment.js date/time exploration / testing section
+// Moment.js + jalali-moment date/time exploration / testing section
 // ────────────────────────────────────────────────
 
 // Create moment object for current date/time
@@ -104,10 +104,19 @@ const now = moment()
 // → Moment is immutable by default when chaining → returns new moment object
 // → Very fluent and readable
 
-// Format date in human-readable way
-console.log(now.format('MMMM Do, YYYY'))
-// → Outputs: March 4th, 2026 (or similar depending on locale)
-// Why .format()?
-// → Extremely flexible & readable output
-// → Supports many tokens: MMMM = full month, Do = day with ordinal, YYYY = 4-digit year
-// → Perfect for displaying "Created: March 4th, 2026" in UI later
+// Switch to Persian (Farsi) locale
+now.locale('fa')
+// Why now.locale('fa')?
+// → Activates Persian language, formatting, and calendar support
+// → Moment.js + jalali-moment together enable proper Shamsi/Jalali dates
+// → Without this → dates would stay in English/Gregorian
+
+// Format date in Persian style
+console.log(now.format('MMMM Do, YYYY, h:mm:ss a'))
+// → Example output: اسفند ۱۴ام, ۱۴۰۴, ۱۰:۱۰:۰۰ ب.ظ (or similar)
+// Why this format?
+// → 'MMMM' = full month name in Persian (اسفند)
+// → 'Do' = day with ordinal (۱۴ام)
+// → 'YYYY' = 4-digit Shamsi year (۱۴۰۴)
+// → 'h:mm:ss a' = time with AM/PM in Persian (ب.ظ / ق.ظ)
+// → Perfect for displaying Persian dates/times in UI later
