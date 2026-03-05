@@ -21,13 +21,13 @@ const productId = location.hash.substring(1)
 // → Common pattern in vanilla JS multi-page apps
 
 // Load all products from shared localStorage function
-const products = getSaveProducts()
-// Why reuse getSaveProducts()?
-// → Same data source as main page → true sync across pages
-// → DRY: one loading function for entire app
+let products = getSaveProducts()
+// Why let (not const)?
+// → products can be reassigned later when storage event updates it
+// → Allows sync with changes made on other tabs/windows
 
 // Find the product to edit
-const product = products.find(function(item) {
+let product = products.find(function(item) {
     return item.id === productId
     // Relies on unique .id (from uuidv4())
 })
@@ -49,15 +49,16 @@ titleElement.value = product.title
 priceElement.value = product.price
 // Same idea — works even if price is number (auto-converted to string)
 
-// Auto-save title on every change
+// Auto-save title on every keystroke/change
 titleElement.addEventListener('input', function(e) {
     product.title = e.target.value
     saveProducts(products)
     // Why 'input' event?
-    // → Real-time saving → changes saved as user types
-    // → No need for "Save" button → modern, frictionless UX
+    // → Real-time saving → changes saved as user types (no "Save" button needed)
+    // → Modern, frictionless UX
     // Why saveProducts() every time?
-    // → Immediate persistence → survives refresh/close
+    // → Immediate persistence → survives refresh/close/reopen
+    // → Other tabs/windows will see changes via storage event
 })
 
 // Auto-save price on every change
@@ -65,7 +66,7 @@ priceElement.addEventListener('input', function(e) {
     product.price = e.target.value
     saveProducts(products)
     // Same real-time save pattern as title
-    // Note: if price should be number → parseFloat(e.target.value) later
+    // Note: if price should be numeric → parseFloat(e.target.value) later
 })
 
 // Delete product when remove button clicked
@@ -79,4 +80,32 @@ removeElement.addEventListener('click', function(e) {
     // Why ./index.html (relative)?
     // → Works if edit page is in same folder
     // → /index.html (absolute) also fine — both correct here
+})
+
+// Listen for storage changes from other tabs/windows
+window.addEventListener('storage', function(e) {
+    if (e.key === 'products') {
+        products = JSON.parse(e.newValue)
+        // Why re-parse e.newValue?
+        // → storage event gives new value as string → convert back to array
+        // → Keeps local products variable in sync with storage
+
+        // Re-find product (in case it was deleted on another tab)
+        product = products.find(function(item) {
+            return item.id === productId
+        })
+
+        if (product === undefined) {
+            location.assign('/index.html')
+            // If product was deleted elsewhere → redirect to list
+            // Prevents editing non-existent item
+        }
+
+        // Update form fields with latest data
+        titleElement.value = product.title
+        priceElement.value = product.price
+        // Why update inputs?
+        // → If someone else edits the same product in another tab → see live changes
+        // → True multi-tab sync via browser's storage event
+    }
 })

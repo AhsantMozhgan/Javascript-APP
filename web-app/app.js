@@ -3,6 +3,8 @@
 // → Keeps app.js clean and focused on application flow
 // → Reuses the same loading logic everywhere → single source of truth
 let products = getSaveProducts()
+// Why let (not const)?
+// → products needs to be reassigned when storage event fires
 
 // Single object that holds all current filter settings
 // Why one object instead of separate variables?
@@ -32,7 +34,7 @@ document.querySelector('#search-products').addEventListener('input', function(e)
 document.querySelector('#add-product-form').addEventListener('submit', function(e) {
     e.preventDefault()   // Stop page reload → keeps app feeling smooth (single-page-like)
     
-    // Add new item to array
+    // Add new item to array with unique ID
     const id = uuidv4()
     products.push({
         id: id,
@@ -44,7 +46,7 @@ document.querySelector('#add-product-form').addEventListener('submit', function(
     // Persist the updated list immediately
     // Why call saveProducts right after push?
     // → Ensures data survives refresh / close / reopen
-    // → Keeps storage in sync with memory
+    // → Triggers storage event in other tabs/windows
     saveProducts(products)
 
     // Update display immediately
@@ -62,4 +64,20 @@ document.querySelector('#add-product-form').addEventListener('submit', function(
 document.querySelector('#available-products').addEventListener('change', function(e) {
     filters.availableProducts = e.target.checked
     renderProducts(products, filters)
+})
+
+// Listen for storage changes from other tabs/windows
+window.addEventListener('storage', function(e) {
+    if (e.key === 'products') {
+        products = JSON.parse(e.newValue)
+        // Why re-parse e.newValue?
+        // → storage event gives new value as string → convert back to array
+        // → Keeps local products variable in sync with storage
+
+        // Re-render list with latest data
+        renderProducts(products, filters)
+        // Why re-render?
+        // → If another tab added/edited/removed product → see changes live
+        // → True multi-tab/multi-window synchronization
+    }
 })
