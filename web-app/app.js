@@ -5,6 +5,7 @@
 let products = getSaveProducts()
 // Why let (not const)?
 // → products needs to be reassigned when storage event fires
+// → Allows live sync when data changes in other tabs/windows
 
 // Single object that holds all current filter settings
 // Why one object instead of separate variables?
@@ -46,7 +47,7 @@ document.querySelector('#add-product-form').addEventListener('submit', function(
     // Persist the updated list immediately
     // Why call saveProducts right after push?
     // → Ensures data survives refresh / close / reopen
-    // → Triggers storage event in other tabs/windows
+    // → Triggers storage event in other tabs/windows → enables live sync
     saveProducts(products)
 
     // Update display immediately
@@ -81,3 +82,43 @@ window.addEventListener('storage', function(e) {
         // → True multi-tab/multi-window synchronization
     }
 })
+
+// ────────────────────────────────────────────────
+// Date & Timestamp exploration / testing section
+// ────────────────────────────────────────────────
+
+// Create current date object
+const now = new Date()
+// Why new Date() without arguments?
+// → Returns current date & time at the moment of execution
+// → Useful for timestamps, createdAt, updatedAt fields
+
+// console.log(now)
+// → Prints full readable date/time (e.g. Wed Mar 04 2026 21:09:00 GMT-0800)
+
+// Individual component getters (commented out)
+// console.log(`Year: ${now.getFullYear()}`)     → e.g. 2026
+// console.log(`Month: ${now.getMonth()}`)       → 0–11 (0 = January!)
+// console.log(`Day: ${now.getDate()}`)          → 1–31
+// console.log(`Hour: ${now.getHours()}`)        → 0–23
+// console.log(`Minutes: ${now.getMinutes()}`)
+// console.log(`Second: ${now.getSeconds()}`)
+// Why these methods?
+// → Allow extracting specific parts of date/time
+// → Useful for formatting, comparisons, or displaying custom dates
+
+// Get milliseconds since Jan 1, 1970 (Unix timestamp in ms)
+const timestamp = now.getTime()
+// console.log(timestamp)
+// → Large number (e.g. 1767486540000) → unique point in time
+
+// Convert timestamp back to Date object
+const myDate = new Date(timestamp)
+// Why do this?
+// → Demonstrates round-trip: Date → timestamp → Date
+// → Shows that getTime() captures exact moment
+// → Useful pattern when storing dates in localStorage/database (store number, recreate Date later)
+
+console.log(`Year: ${myDate.getFullYear()}`)
+// → Should print same year as now.getFullYear()
+// → Verifies the timestamp → Date conversion works correctly
