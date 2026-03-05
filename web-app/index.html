@@ -8,37 +8,50 @@
             → but in real-world apps these two lines prevent garbled text (especially Persian/Farsi) 
                and make the page look correct on mobile phones.
             → You can safely add them later without breaking anything.
+            → charset=UTF-8 ensures Persian characters display correctly
+            → viewport makes the page responsive on phones (prevents zooming out too much)
         -->
     </head>
     <body>
         <h1>Book Store</h1>
+        <!-- 
+            Why <h1>?
+            → Main heading of the page → sets the topic clearly
+            → Good for accessibility (screen readers announce it first)
+            → Semantic HTML → helps search engines understand page content
+        -->
 
         <!-- Search field: allows live filtering of the product list -->
         <input type="text" id="search-products" placeholder="Search...">
         <!-- 
             Why id="search-products"?
-            → Clear, descriptive name → easy to select with document.querySelector later
-            Why placeholder?
-            → Gives hint to user what to do → improves usability
+            → Descriptive name → easy and reliable to select in JavaScript with querySelector
+            → Avoids conflicts with other inputs
+            Why placeholder="Search..."?
+            → Gives immediate hint to user → improves usability (no label needed)
+            → Common pattern in modern search boxes
         -->
 
         <!-- Checkbox to toggle "show only available (exist: true) products" -->
         <label>
             <input type="checkbox" id="available-products">Available Products
             <!--
-                Why <label> wraps the input + text?
-                → Clicking the text also toggles the checkbox → better accessibility & UX
+                Why <label> wraps both input + text?
+                → Clicking anywhere on "Available Products" toggles checkbox
+                → Much better accessibility & UX (larger click target)
+                → Screen readers announce "Available Products checkbox" correctly
                 Why id on checkbox?
-                → Lets us easily listen for changes in JavaScript
+                → Allows easy selection in JS for event listener
             -->
         </label>
 
-        <!-- Container where filtered product titles will appear dynamically -->
+        <!-- Container where filtered product titles (or full items) will appear dynamically -->
         <div id="products"></div>
         <!-- 
-            Why empty <div> with id?
-            → Acts as a placeholder → JavaScript will insert elements here
-            → Using id makes it very easy to target with querySelector
+            Why empty <div> with id="products"?
+            → Serves as placeholder → JavaScript will append child elements here
+            → id makes it very easy/fast to target with document.querySelector('#products')
+            → Common pattern for dynamic lists in vanilla JS
         -->
 
         <!-- Form for adding new products -->
@@ -46,30 +59,60 @@
             <input type="text" name="productTitle" placeholder="Add Product...">
             <!--
                 Why name="productTitle"?
-                → Allows easy access via e.target.elements.productTitle in submit handler
+                → Lets us access the value easily in submit handler:
+                  e.target.elements.productTitle.value
+                → Standard form control naming pattern
+                Why placeholder?
+                → Guides user what to type → better UX
                 Why no required attribute?
-                → Optional here, but adding it later prevents empty submissions
+                → Optional here (learning phase) — but adding it later prevents empty submissions
             -->
             <button>Add Product</button>
+            <!-- 
+                Why <button> inside <form> without type="button"?
+                → Default type="submit" → triggers form submit event
+                → Clean & semantic — no extra JS needed to submit
+            -->
         </form>
 
         <!-- 
-            External JavaScript files – order matters!
+            External JavaScript files – loading order is critical!
             Why moment.js from CDN first?
-            → app.js uses moment() → must be defined before app.js runs
+            → app.js uses moment() → must be loaded before app.js executes
+            → moment-with-locales includes all language support
         -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment-with-locales.min.js" integrity="sha512-4F1cxYdMiAW98oomSLaygEwmCnIP38pb4Kx70yQYqRwLVCs3DbRumfBq82T08g/4LJ/smbFGFpmeFlQgoDccgg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         
         <!-- jalali-moment for Persian (Jalali/Shamsi) calendar support -->
         <!-- Why this library? https://github.com/fingerpich/jalali-moment -->
-        <!-- → moment.js doesn't support Persian calendar natively
-            → jalali-moment extends moment with fa locale and jalaali methods
-            → Perfect for displaying dates in Persian format (e.g. ۱۴۰۴/۱۲/۱۵)
+        <!-- → moment.js alone does not support Jalali calendar natively
+            → jalali-moment adds Persian date conversion, fa locale, Persian month/day names
+            → Enables correct Shamsi dates (e.g. ۱۴۰۴/۱۲/۱۵) and relative time in Farsi
+            → Perfect for displaying "آخرین ویرایش: ۵ دقیقه پیش" or Persian timestamps
         -->
         <script src="https://unpkg.com/jalali-moment/dist/jalali-moment.browser.js"></script>
         
         <script src="uuid.js"></script>
+        <!-- 
+            Why uuid.js?
+            → Provides uuidv4() function → generates unique IDs for products
+            → Essential for reliable remove/edit (using id instead of index)
+        -->
+        
         <script src="function.js"></script>
+        <!-- 
+            Why function.js before app.js?
+            → app.js calls functions defined in function.js
+              (getSaveProducts, saveProducts, renderProducts, createProductDOM, etc.)
+            → Must be loaded first to avoid "undefined" errors
+        -->
+        
         <script src="app.js"></script>
+        <!-- 
+            Why app.js last?
+            → Contains main application logic & event listeners
+            → Needs all helpers (moment, jalali-moment, uuid, function.js) to be ready
+            → Standard pattern: libraries → utilities → main app code
+        -->
     </body>
 </html>

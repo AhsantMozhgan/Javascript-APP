@@ -38,6 +38,8 @@
             → Matches title pattern → consistent and predictable
         -->
 
+        <span id="last-edit"></span>
+
         <!-- Button to delete the current product -->
         <button id="remove-product">Remove</button>
         <!-- 
@@ -46,16 +48,22 @@
             → id allows easy event listener attachment
         -->
 
-        <!-- 
-            Script loading order matters:
-            uuid.js → if you later need uuidv4() on this page
-            function.js → provides shared helpers
-            edit-product.js → page-specific logic
-            Note: moment & jalali-moment are NOT loaded here
-            → Not used on this page yet → no need to include them
-            → If you add Persian date display/editing later → add the scripts
-        -->
         <!-- <script src="moment.js"></script> -->
+
+        <!-- 
+            External JavaScript files – order matters!
+            Why moment.js from CDN first?
+            → app.js uses moment() → must be defined before app.js runs
+        -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment-with-locales.min.js" integrity="sha512-4F1cxYdMiAW98oomSLaygEwmCnIP38pb4Kx70yQYqRwLVCs3DbRumfBq82T08g/4LJ/smbFGFpmeFlQgoDccgg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        
+        <!-- jalali-moment for Persian (Jalali/Shamsi) calendar support -->
+        <!-- Why this library? https://github.com/fingerpich/jalali-moment -->
+        <!-- → moment.js doesn't support Persian calendar natively
+            → jalali-moment extends moment with fa locale and jalaali methods
+            → Perfect for displaying dates in Persian format (e.g. ۱۴۰۴/۱۲/۱۵)
+        -->
+        <script src="https://unpkg.com/jalali-moment/dist/jalali-moment.browser.js"></script>
         <script src="uuid.js"></script>
         <script src="function.js"></script>
         <script src="edit-product.js"></script>
