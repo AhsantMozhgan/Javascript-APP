@@ -84,41 +84,30 @@ window.addEventListener('storage', function(e) {
 })
 
 // ────────────────────────────────────────────────
-// Date & Timestamp exploration / testing section
+// Moment.js date/time exploration / testing section
 // ────────────────────────────────────────────────
 
-// Create current date object
-const now = new Date()
-// Why new Date() without arguments?
-// → Returns current date & time at the moment of execution
-// → Useful for timestamps, createdAt, updatedAt fields
+// Create moment object for current date/time
+const now = moment()
+// Why moment() instead of new Date()?
+// → Moment.js provides much nicer API for formatting, adding/subtracting time, locales, etc.
+// → Easier to read and work with dates (especially for display)
 
-// console.log(now)
-// → Prints full readable date/time (e.g. Wed Mar 04 2026 21:09:00 GMT-0800)
+// console.log(now.toString())
+// → Prints something like: "Wed Mar 04 2026 21:58:00 GMT-0800"
 
-// Individual component getters (commented out)
-// console.log(`Year: ${now.getFullYear()}`)     → e.g. 2026
-// console.log(`Month: ${now.getMonth()}`)       → 0–11 (0 = January!)
-// console.log(`Day: ${now.getDate()}`)          → 1–31
-// console.log(`Hour: ${now.getHours()}`)        → 0–23
-// console.log(`Minutes: ${now.getMinutes()}`)
-// console.log(`Second: ${now.getSeconds()}`)
-// Why these methods?
-// → Allow extracting specific parts of date/time
-// → Useful for formatting, comparisons, or displaying custom dates
+// Examples of chaining operations (commented out)
+// now.add(1, 'year')
+// now.add(1, 'year').subtract(2, 'days')
+// console.log(now.toString())
+// Why chaining?
+// → Moment is immutable by default when chaining → returns new moment object
+// → Very fluent and readable
 
-// Get milliseconds since Jan 1, 1970 (Unix timestamp in ms)
-const timestamp = now.getTime()
-// console.log(timestamp)
-// → Large number (e.g. 1767486540000) → unique point in time
-
-// Convert timestamp back to Date object
-const myDate = new Date(timestamp)
-// Why do this?
-// → Demonstrates round-trip: Date → timestamp → Date
-// → Shows that getTime() captures exact moment
-// → Useful pattern when storing dates in localStorage/database (store number, recreate Date later)
-
-console.log(`Year: ${myDate.getFullYear()}`)
-// → Should print same year as now.getFullYear()
-// → Verifies the timestamp → Date conversion works correctly
+// Format date in human-readable way
+console.log(now.format('MMMM Do, YYYY'))
+// → Outputs: March 4th, 2026 (or similar depending on locale)
+// Why .format()?
+// → Extremely flexible & readable output
+// → Supports many tokens: MMMM = full month, Do = day with ordinal, YYYY = 4-digit year
+// → Perfect for displaying "Created: March 4th, 2026" in UI later

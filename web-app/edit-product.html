@@ -48,10 +48,14 @@
 
         <!-- 
             Script loading order matters:
-            1. uuid.js → if you later need uuidv4() on this page
-            2. function.js → provides shared helpers (getSaveProducts, saveProducts, removeProduct, etc.)
-            3. edit-product.js → page-specific logic
+            uuid.js → if you later need uuidv4() on this page
+            function.js → provides shared helpers
+            edit-product.js → page-specific logic
+            Note: moment.js is commented out here
+            → Not used on this page yet, so no need to load it
+            → If you add date display/editing later → include it
         -->
+        <!-- <script src="moment.js"></script> -->
         <script src="uuid.js"></script>
         <script src="function.js"></script>
         <script src="edit-product.js"></script>

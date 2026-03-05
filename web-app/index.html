@@ -37,7 +37,7 @@
         <div id="products"></div>
         <!-- 
             Why empty <div> with id?
-            → Acts as a placeholder → JavaScript will insert <p> elements here
+            → Acts as a placeholder → JavaScript will insert elements here
             → Using id makes it very easy to target with querySelector
         -->
 
@@ -55,14 +55,15 @@
 
         <!-- 
             External JavaScript files
-            Why two separate files?
-            → Separation of concerns: function.js = reusable helpers & render logic
-            → app.js = main app flow, event listeners, business logic
-            → Easier to read, test, and maintain as project grows
-            Why function.js first?
-            → renderProducts and createProductDOM must be defined before they are called in app.js
+            Why moment.js from CDN first?
+            → moment is used in app.js → must load before app.js runs
+            Why uuid.js?
+            → Provides uuidv4() for unique IDs when adding products
+            Why function.js before app.js?
+            → app.js calls functions defined in function.js (getSaveProducts, saveProducts, renderProducts, etc.)
         -->
-            <script src="uuid.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment-with-locales.min.js" integrity="sha512-4F1cxYdMiAW98oomSLaygEwmCnIP38pb4Kx70yQYqRwLVCs3DbRumfBq82T08g/4LJ/smbFGFpmeFlQgoDccgg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="uuid.js"></script>
         <script src="function.js"></script>
         <script src="app.js"></script>
     </body>
