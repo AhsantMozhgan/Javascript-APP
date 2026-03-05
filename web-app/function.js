@@ -1,9 +1,9 @@
 // Quick test / demo line (can be removed later)
 // Why console.log(uuidv4()) ?
-// → Tests whether the uuid library is properly loaded and working
+// → Tests whether the uuid library (uuid.js) is properly loaded and functional
 // → uuidv4() generates a random UUID (version 4) → ideal for unique product IDs
-// → Helps confirm the script inclusion before using it in product creation
-// → Will throw ReferenceError if uuid.js is missing or not loaded correctly
+// → Helps confirm the script is included correctly before relying on it
+// → Will throw ReferenceError if uuid.js is missing or not loaded in HTML
 console.log(uuidv4())
 
 // Helper: Load products from localStorage or return empty array
@@ -82,8 +82,37 @@ const toggleProduct = function(id) {
     }
 }
 
-// Main rendering function: filters → clears → rebuilds DOM list
+// Sort products based on current sort preference
+const sortProduct = function(products, sortBy) {
+    if (sortBy === 'byEdited') {
+        return products.sort(function(a,b) {
+            // Sort descending (most recent first)
+            // Why a.updated > b.updated → -1 ?
+            // → If a was updated more recently → put a before b
+            if (a.updated > b.updated) {
+                return -1
+            } else if (a.updated < b.updated) {
+                return 1
+            } else {
+                return 0
+            }
+        })
+    } else {
+        return products
+        // Default: no sorting (or could return copy if needed)
+        // Why return products directly?
+        // → Preserves original order when sortBy is not 'byEdited'
+    }
+}
+
+// Main rendering function: filters → sorts → clears → rebuilds DOM list
 const renderProducts = function(products, filters) {
+    // Apply sorting first (modifies products in place)
+    // Why sort before filtering?
+    // → Sorting should apply to full list → then filter the sorted result
+    // → Ensures correct order even when filtering is active
+    products = sortProduct(products, filters.sortBy)
+    
     // First filter: case-insensitive title search
     // Why .toLowerCase() on both?
     // → Users expect "book" to match "Book", "BOOK", "bOoK" → intuitive search
@@ -109,9 +138,9 @@ const renderProducts = function(products, filters) {
     // → Prevents duplicate items on every re-render
     document.querySelector('#products').innerHTML = ''
     
-    // Render each filtered product using helper
+    // Render each filtered (and sorted) product using helper
     // Why delegate to createProductDOM?
-    // → Keeps renderProducts focused on filtering & loop logic
+    // → Keeps renderProducts focused on filtering/sorting/loop logic
     // → createProductDOM owns item structure → easy to change layout
     filteredProducts.forEach(function(item) {
         document.querySelector('#products').appendChild(createProductDOM(item))

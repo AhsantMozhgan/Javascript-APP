@@ -7,9 +7,9 @@
             → For very simple local learning projects it's not strictly required,
             → but in real-world apps these two lines prevent garbled text (especially Persian/Farsi) 
                and make the page look correct on mobile phones.
-            → You can safely add them later without breaking anything.
             → charset=UTF-8 ensures Persian characters display correctly
             → viewport makes the page responsive on phones (prevents zooming out too much)
+            → You can safely add them later without breaking anything.
         -->
     </head>
     <body>
@@ -45,7 +45,22 @@
             -->
         </label>
 
-        <!-- Container where filtered product titles (or full items) will appear dynamically -->
+        <!-- Sorting dropdown to change display order -->
+        <select id="sort">
+            <option value="byEdited">By Edited</option>
+            <option value="byCreated">By Created</option>
+            <!-- 
+                Why <select> with id="sort"?
+                → Native browser control → accessible, keyboard-friendly, no extra CSS/JS needed
+                → id allows easy event listener attachment in JavaScript
+                Why these options?
+                → "By Edited" = most recently updated first (common for todo/product lists)
+                → "By Created" = newest added first (chronological order)
+                → Prepares for sorting by timestamps (created/updated)
+            -->
+        </select>
+
+        <!-- Container where filtered/sorted product items appear dynamically -->
         <div id="products"></div>
         <!-- 
             Why empty <div> with id="products"?
@@ -59,8 +74,7 @@
             <input type="text" name="productTitle" placeholder="Add Product...">
             <!--
                 Why name="productTitle"?
-                → Lets us access the value easily in submit handler:
-                  e.target.elements.productTitle.value
+                → Lets us access value easily in submit handler: e.target.elements.productTitle.value
                 → Standard form control naming pattern
                 Why placeholder?
                 → Guides user what to type → better UX
@@ -78,15 +92,15 @@
         <!-- 
             External JavaScript files – loading order is critical!
             Why moment.js from CDN first?
-            → app.js uses moment() → must be loaded before app.js executes
+            → app.js uses moment() → must be defined before app.js executes
             → moment-with-locales includes all language support
         -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment-with-locales.min.js" integrity="sha512-4F1cxYdMiAW98oomSLaygEwmCnIP38pb4Kx70yQYqRwLVCs3DbRumfBq82T08g/4LJ/smbFGFpmeFlQgoDccgg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         
         <!-- jalali-moment for Persian (Jalali/Shamsi) calendar support -->
         <!-- Why this library? https://github.com/fingerpich/jalali-moment -->
-        <!-- → moment.js alone does not support Jalali calendar natively
-            → jalali-moment adds Persian date conversion, fa locale, Persian month/day names
+        <!-- → moment.js alone does not support Persian calendar natively
+            → jalali-moment adds Jalali date conversion, fa locale, Persian month/day names
             → Enables correct Shamsi dates (e.g. ۱۴۰۴/۱۲/۱۵) and relative time in Farsi
             → Perfect for displaying "آخرین ویرایش: ۵ دقیقه پیش" or Persian timestamps
         -->
@@ -95,7 +109,7 @@
         <script src="uuid.js"></script>
         <!-- 
             Why uuid.js?
-            → Provides uuidv4() function → generates unique IDs for products
+            → Provides uuidv4() → generates unique IDs for products
             → Essential for reliable remove/edit (using id instead of index)
         -->
         
@@ -111,7 +125,7 @@
         <!-- 
             Why app.js last?
             → Contains main application logic & event listeners
-            → Needs all helpers (moment, jalali-moment, uuid, function.js) to be ready
+            → Needs all dependencies (moment, jalali-moment, uuid, function.js) to be ready
             → Standard pattern: libraries → utilities → main app code
         -->
     </body>
