@@ -336,3 +336,71 @@ console.log(usernameC.userInfo())
 // → Easier to add static methods, getters/setters, extends (inheritance)
 // → Standard in modern JavaScript (React, Node, etc.)
 // → Still fully compatible with old prototype style
+
+
+
+
+//////////////////////////////////////////////////////////////////////
+// subclasses
+class UserSc {
+    // Parent/base class (superclass)
+    // Why class UserSc?
+    // → Defines common properties/methods that all users share
+    // → Acts as blueprint for any kind of user
+
+    constructor(id, email) {
+        this.id = id
+        this.email = email
+        // Why constructor here?
+        // → Called automatically when using new UserSc(...) or subclasses
+        // → this refers to the new instance being created
+        // → Initializes shared properties (id & email)
+    }
+    // No methods added → can be extended in subclasses or here if needed
+}
+
+// Job class inherits from UserSc (subclass/child class)
+class Job extends UserSc {
+    // Why extends UserSc?
+    // → Job inherits all properties & methods from UserSc
+    // → Job is a specialized type of User → has everything UserSc has + more
+    // → Classic inheritance: "Job is a User with a jobTitle"
+
+    constructor(id, email, jobTitle) {
+        super(id, email)
+        // Why super(id, email)?
+        // → Calls parent class (UserSc) constructor
+        // → Required in subclass constructor before using this
+        // → Passes id & email to parent → reuses parent's initialization
+        // → Without super() → ReferenceError: Must call super before this
+
+        this.jobTitle = jobTitle
+        // Adds extra property specific to Job instances
+        // → Each Job has id, email (from parent) + jobTitle (own)
+    }
+    // No extra methods here → inherits any from UserSc (none yet)
+}
+
+const usernameSc = new Job('sadri-masoodegmail.com', 2, 'Developer')
+// Why new Job(...) ?
+// → new does:
+//   1. Creates new empty object {}
+//   2. Sets this to that object
+//   3. Calls Job constructor
+//   4. Job constructor calls super() → runs UserSc constructor
+//   5. Adds jobTitle
+//   6. Returns the new object
+
+console.log(usernameSc)     
+// → Output: Job { id: 'sadri-masoodegmail.com', email: 2, jobTitle: 'Developer' }
+// Why Job in output (not UserSc)?
+// → Constructor name is Job → JS shows class name in console
+// → But internally it's still prototype chain: Job.prototype → UserSc.prototype → Object.prototype
+
+// Summary: Why use class + extends + super?
+// → Clean, readable way to create inheritance hierarchies
+// → Reuses parent initialization (super)
+// → All instances of Job inherit UserSc behavior
+// → Can add/override methods easily
+// → Modern standard in JavaScript (ES6+)
+// → Much clearer than old constructor + User.prototype = Object.create(User.prototype)
