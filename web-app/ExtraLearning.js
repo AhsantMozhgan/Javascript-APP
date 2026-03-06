@@ -988,3 +988,19 @@ carsDetails('MasoodSadri', 188, 'Book1', 'Book2', 'Book3')
 
 
 //////////////////////////////////////////////////////////////////////////////////////
+// spread-operator
+// Correct & safe version of what you probably wanted to show:
+
+const original = ['Book1', 'Book2', 'Book3']
+
+const copy = [...original]           // safe copy
+copy.push('Book4')                   // mutate copy only
+
+console.log(original)                // still ['Book1', 'Book2', 'Book3']
+console.log(copy)                    // ['Book1', 'Book2', 'Book3', 'Book4']
+
+// Immutable update (most recommended modern way)
+let current = ['Book1', 'Book2', 'Book3']
+current = [...current, 'Book4']      // new array, no mutation
+
+console.log(current)                 // ['Book1', 'Book2', 'Book3', 'Book4']
