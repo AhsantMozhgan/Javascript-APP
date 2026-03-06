@@ -9,24 +9,13 @@ console.log(uuidv4())
 // Helper: Load products from localStorage or return empty array
 const getSaveProducts = () => {
     // Attempt to load previously saved products
-    const productJSON = localStorage.getItem('products')
-    
-    // Why check !== null ?
-    // → localStorage.getItem returns null when no data was ever saved
-    //   (first visit, storage cleared, private browsing, etc.)
-    // → JSON.parse(null) would throw SyntaxError → this guard prevents crash
-    if (productJSON !== null) {
-        return JSON.parse(productJSON)
-        // Why JSON.parse?
-        // → localStorage stores data as strings only
-        // → Converts saved JSON string back into real array of objects
-        // → After this → products has .id, .title, .exist, .created, .updated, etc.
-    } else {
-        return []
-        // Why return [] instead of undefined/null?
-        // → Always returns consistent type (array) → safer for .push(), .filter(), etc.
-        // → Avoids extra null/undefined checks in calling code
-    }
+    const productJSON = localStorage.getItem('products')  
+    return productJSON !== null ? JSON.parse(productJSON) : []
+    // Why this ternary alternative?
+    // → Very concise one-liner → does the same as if/else above
+    // → Common pattern when result is simple
+    // → Note: typo in your code → SON.parse should be JSON.parse
+    // → Arrow function body with implicit return (no curly braces)
 }
 
 // Helper: Save products array to localStorage
@@ -41,6 +30,7 @@ const saveProducts = (products) => {
     // → Kept simple for learning → errors are rare in local dev
     // → In real apps: add try/catch for quota exceeded or security blocks
 }
+// Arrow function with single parameter → parentheses optional but kept for clarity
 
 // Remove a product by its unique id
 const removeProduct = (id) => {
@@ -48,8 +38,8 @@ const removeProduct = (id) => {
     // Why .findIndex()?
     // → Returns numeric index → perfect for .splice()
     // → .find() would return object → harder to remove from array
-    // Relies on every product having unique .id (from uuidv4())
     const productIndex = products.findIndex(item => item.id === id)
+    // Arrow callback → short, implicit return
     
     // Why check > -1 ?
     // → .findIndex returns -1 if no match → .splice(-1) would be invalid
@@ -67,7 +57,8 @@ const toggleProduct = (id) => {
     // Why .find() instead of .findIndex() here?
     // → We want the object itself to modify .exist
     // → No need for index → direct property change
-    const product = products.find(item => {item.id === id})
+    const product = products.find(item => item.id === id)
+    // Arrow callback → very concise
     
     // Why check !== undefined ?
     // → Prevents error if id not found (though unlikely with proper buttons)
@@ -95,9 +86,6 @@ const sortProduct = (products, sortBy) => {
         })
     } else if(sortBy === 'byCreated') {
         return products.sort((a,b) => {
-            // Sort descending (newest first)
-            // Why a.created > b.created → -1 ?
-            // → If a was created more recently → put a before b
             if (a.created > b.created) {
                 return -1
             } else if (a.created < b.created) {
@@ -118,23 +106,19 @@ const sortProduct = (products, sortBy) => {
 const renderProducts = (products, filters) => {
     // Apply sorting first (modifies products in place)
     // Why sort before filtering?
-    // → Sorting should apply to the full list → then filter the sorted result
+    // → Sorting should apply to full list → then filter the sorted result
     // → Ensures correct order even when filtering is active
-    // → Note: products.sort() mutates the array → that's intentional here
     products = sortProduct(products, filters.sortBy)
     
     // First filter: case-insensitive title search
     // Why .toLowerCase() on both?
     // → Users expect "book" to match "Book", "BOOK", "bOoK" → intuitive search
-    let filteredProducts = products.filter((item) => {
+    let filteredProducts = products.filter(item => {
         return item.title.toLowerCase().includes(filters.searchItem.toLowerCase())
     })
 
     // Second filter: available products only if checkbox checked
-    // Why separate filter calls?
-    // → Much more readable & debuggable
-    // → Easy to add more filters later without messy chaining
-    filteredProducts = filteredProducts.filter((item) => {
+    filteredProducts = filteredProducts.filter(item => {
         if (filters.availableProducts) {
             return item.exist   // boolean return is clean & idiomatic
         } else {
@@ -149,10 +133,7 @@ const renderProducts = (products, filters) => {
     document.querySelector('#products').innerHTML = ''
     
     // Render each filtered (and sorted) product using helper
-    // Why delegate to createProductDOM?
-    // → Keeps renderProducts focused on filtering/sorting/loop logic
-    // → createProductDOM owns item structure → easy to change layout
-    filteredProducts.forEach(function(item) {
+    filteredProducts.forEach(item => {
         document.querySelector('#products').appendChild(createProductDOM(item))
     })
 }
@@ -165,42 +146,26 @@ const createProductDOM = (product) => {
     const removeButton = document.createElement('button')
 
     checkbox.setAttribute('type', 'checkbox')
-    // Why checkbox.checked = !product.exist ?
-    // → If exist = true (available) → unchecked (not "unavailable")
-    // → If exist = false → checked (marks as unavailable)
-    // → Visual state matches logical state
     checkbox.checked = !product.exist
     productEl.appendChild(checkbox)
 
-    // Wire up toggle on change
-    // Why inside createProductDOM?
-    // → Each checkbox gets its own listener with closure over current product.id
-    // → No need for event delegation or data-id attributes
-    checkbox.addEventListener('change', function(e) {
+    checkbox.addEventListener('change', e => {
         toggleProduct(product.id)
-        saveProducts(products)          // persist toggle immediately
-        renderProducts(products, filters) // refresh UI
+        saveProducts(products)
+        renderProducts(products, filters)
     })
 
-    // Make title clickable → opens edit page for this product
     productItem.textContent = product.title
     productItem.setAttribute('href', `./edit-product.html#${product.id}`)
-    // Why <a> with href to edit page + #id ?
-    // → Clicking title opens edit page → intuitive navigation
-    // → Hash (#id) passes product ID → no query params or server needed
     productEl.appendChild(productItem)
 
     removeButton.textContent = 'Remove'
     productEl.appendChild(removeButton)
     
-    // Wire up remove button
-    // Why addEventListener here?
-    // → Each button knows exactly which product.id to remove (via closure)
-    // → Clean, no global event listeners or delegation needed
-    removeButton.addEventListener('click', function() {
+    removeButton.addEventListener('click', () => {
         removeProduct(product.id)
-        saveProducts(products)          // save after removal
-        renderProducts(products, filters) // refresh list
+        saveProducts(products)
+        renderProducts(products, filters)
     })
     
     return productEl
