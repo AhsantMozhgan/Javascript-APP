@@ -210,3 +210,72 @@ console.log(username2)         // → User { email: 'ahsantmozhgan2@gmail.com' }
 // → Properties added with this.property = value
 // → Each instance gets its own copy of properties
 // → Methods can be added too (though better on prototype for memory efficiency)
+
+
+
+// inheritance
+// const User = {
+//     id: 2,
+//     email: 'sadri.masood@gmail.com',
+//     userInfo: function () {
+//         return 'ID: ${this.id} - Email: ${this.email}'
+//     }
+// }
+// Why this object literal approach has limitations?
+// → It creates only ONE object → you can't easily make multiple independent users
+// → All users would share the same id/email if you tried to reuse it
+// → No inheritance or reusability for creating similar objects with different data
+
+const UserI = function(email, id) {
+    this.email = email
+    this.id = id
+    // Why this.email = email and this.id = id ?
+    // → this refers to the new object created by new UserI(...)
+    // → Assigns the passed arguments as properties of each instance
+    // → Each new UserI gets its own unique email and id
+}
+// Why constructor function named UserI (capital U)?
+// → Convention in JavaScript: constructor functions start with capital letter
+// → Signals that it should be called with new to create instances
+
+UserI.prototype.userInfo = function() {
+    return `ID: ${this.id} - Email: ${this.email}`
+    // Why add method to .prototype instead of inside constructor?
+    // → Saves memory: method is shared across all instances (not recreated per object)
+    // → Inheritance: all objects created by new UserI inherit userInfo from prototype
+    // → this inside prototype method refers to the instance that called it
+    // → Classic JavaScript inheritance pattern before ES6 class
+}
+// Why UserI.prototype?
+// → Every function in JS has a .prototype object
+// → Properties/methods added to .prototype are shared by all instances
+// → This is how inheritance works in pre-class JavaScript
+
+const usernameI = new UserI('test@gmail.com', 2)
+console.log(usernameI.userInfo())         
+// → Outputs: "ID: 2 - Email: test@gmail.com"
+
+// Why new UserI(...) ?
+// → new does 4 things:
+//   1. Creates new empty object {}
+//   2. Sets this to point to that new object
+//   3. Runs constructor body → adds email & id
+//   4. Returns the new object (implicitly)
+// → usernameI gets its own email/id + access to userInfo via prototype chain
+
+const usernameI2 = new UserI('test2@gmail.com', 6)
+console.log(usernameI2.userInfo())  
+// → Outputs: "ID: 6 - Email: test2@gmail.com"
+
+// Why multiple instances work?
+// → Every new UserI() creates a completely independent object
+// → Each has its own this.email & this.id
+// → All share the same userInfo method from prototype → memory efficient
+// → This is true inheritance: instances inherit behavior from prototype
+
+// Summary: Why this prototype pattern?
+// → Allows creating many similar objects (instances) with different data
+// → Shared methods live on prototype → saves memory (not duplicated per object)
+// → this inside methods refers to the calling instance
+// → Classic way to implement "classes" in pre-ES6 JavaScript
+// → Modern equivalent: class UserI { constructor(email, id) { ... } userInfo() { ... } }        
