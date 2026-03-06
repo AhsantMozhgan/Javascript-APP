@@ -479,3 +479,81 @@ console.log(productTest.productInfo)
 // → Setter parses input and updates multiple properties
 // → Together they create a "virtual" productInfo property
 // → Very powerful for clean, readable object interfaces
+
+
+//////////////////////////////////////////////////////////////////////////////////
+// challenge-16
+class UserChallenge16 {
+    // Why class UserChallenge16?
+    // → Modern ES6 class syntax → cleaner way to define objects with constructor & properties
+    // → Acts as blueprint for creating user instances with id & email
+
+    constructor(id, email) {
+        this.id = id
+        this.email = email
+        // Why constructor?
+        // → Special method called automatically when using new UserChallenge16(...)
+        // → this refers to the newly created instance
+        // → Initializes instance properties (id & email)
+        // → Can have only one constructor per class
+    }
+
+    // Getter: defines a virtual property that runs code when accessed
+    get UserInfoCh16() {
+        return `'ID: ${this.id} - Email: ${this.email}`
+        // Why get UserInfoCh16() { ... } ?
+        // → Creates a getter property → accessed like normal property: usernameCh16.UserInfoCh16
+        // → No parentheses needed → looks like reading a field
+        // → this refers to the current instance
+        // → Returns formatted string → useful for display
+        // → Note: starts with single quote ' — probably typo, should be ` or just string
+    }
+
+    // Setter: defines code that runs when assigning to the property
+    set UserInfoCh16(value) {
+        const parts = value.split(' ')
+        this.id = parts[0]
+        this.email = parts[1]
+        // Why set UserInfoCh16(value) { ... } ?
+        // → Runs automatically when assigning: usernameCh16.UserInfoCh16 = 'something'
+        // → value is whatever was assigned (e.g. '6 test@test.com')
+        // → Splits string by space → assumes format "id email"
+        // → Updates instance properties (id & email)
+        // → Allows treating UserInfoCh16 as one "virtual" property that controls two real ones
+        // → Powerful for clean API: user thinks it's one field but it updates multiple
+    }
+}
+
+const usernameCh16 = new UserChallenge16(2, 'sadri.masood@gmail.com')
+// Why new UserChallenge16(...) ?
+// → new does:
+//   1. Creates new empty object {}
+//   2. Sets this to that object
+//   3. Runs constructor → sets id=2, email='sadri.masood@gmail.com'
+//   4. Returns the new object
+// → usernameCh16 is instance of UserChallenge16
+
+usernameCh16.UserInfoCh16 = '6 test@test.com'
+// Why assignment (no parentheses)?
+// → Because UserInfoCh16 is a setter → treated like normal property assignment
+// → Setter is automatically called
+// → value = '6 test@test.com'
+// → split(' ') → parts = ['6', 'test@test.com']
+// → this.id = '6'
+// → this.email = 'test@test.com'
+// → Updates the instance properties
+
+console.log(usernameCh16)       
+// → Output: UserChallenge16 { id: '6', email: 'test@test.com' }
+// Why id & email changed?
+// → Setter ran → overwrote original values
+// → Shows getters/setters create "virtual" properties that control real data
+
+// Summary: Why use getter & setter in class?
+// → Makes object look like it has a single property UserInfoCh16
+// → Getter: reading usernameCh16.UserInfoCh16 → returns formatted string
+// → Setter: assigning usernameCh16.UserInfoCh16 = '...' → parses & updates id/email
+// → Cleaner API than separate methods (e.g. setInfo(value), getInfo())
+// → Hides implementation (splitting string) → user doesn't see details
+// → Very common pattern in modern JS for computed/virtual properties
+// → Note: getter returns string with leading ' → probably typo (should be ` or remove quote)
