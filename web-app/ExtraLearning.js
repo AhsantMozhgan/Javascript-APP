@@ -861,3 +861,61 @@ getData()
 // → In real apps: replace setTimeout with fetch/API calls
 
 
+//////////////////////////////////////////////////////////////////////////////////////
+// rest-parameters
+
+// const checkOut = (priceone, priceTwo) => {
+//     return priceone + priceTwo
+// }
+// Why this version is limited?
+// → Fixed number of parameters (only 2 prices)
+// → Cannot accept 1, 3, 5, or any variable number of prices
+// → If you call checkOut(29, 59, 89) → extra arguments are ignored
+// → Not flexible for real shopping cart / checkout scenarios
+
+const checkOut = (...price) => {
+    // Why ...price (rest parameter)?
+    // → Collects ALL remaining arguments into a real array called price
+    // → ... is the spread/rest syntax — when used in parameter list = rest
+    // → Allows function to accept ANY number of arguments (0, 1, 10, 100...)
+    // → Very powerful for functions like sum, average, checkout total, etc.
+
+    let sum = 0
+    // Why initialize sum = 0?
+    // → Starting point for accumulation
+    // → Safe even if no arguments are passed (sum = 0)
+
+    price.forEach(item => sum += item)
+    // Why .forEach() ?
+    // → Loops over every number in the price array
+    // → Adds each item to sum
+    // → Arrow function → concise & modern
+    // → Alternative: price.reduce((sum, item) => sum + item, 0)
+
+    return sum
+    // Why return sum?
+    // → Function's purpose is to calculate total → returns the result
+    // → Caller can use it: const total = checkOut(10, 20, 30)
+}
+
+// console.log(checkOut(29,59))
+// → Would output: 88
+// → Works with 2 arguments (rest collects them into array [29, 59])
+
+console.log(checkOut(29,59, 29, 89))
+// → Output: 206
+// → 29 + 59 + 29 + 89 = 206
+// → Rest parameter collects ALL arguments → no matter how many
+// → Shows the flexibility: works with 2, 4, 0, or 100 arguments
+
+// Summary: Why rest parameters (...args) are very useful
+// → Makes function accept variable number of arguments
+// → Arguments become a real array → can use .forEach, .reduce, .map, etc.
+// → No need to use arguments object (old way, not array, tricky)
+// → Very common in modern JS: sum, max, console.log, React props, etc.
+// → Can have only ONE rest parameter, and it must be last
+//   e.g. function example(a, b, ...rest) { }  ← correct
+//   function wrong(...a, b) { }               ← SyntaxError
+
+// Even better version using reduce (more concise):
+// const checkOut = (...price) => price.reduce((sum, item) => sum + item, 0)
