@@ -1,0 +1,24 @@
+body {
+    margin: 1rem;
+    padding: 3rem;
+    font-family: Arial, sans-serif;
+    display: flex;              /* Activates Flexbox layout */
+    justify-content: center;    /* Centers buttons horizontally */
+    gap: 10px;                  /* Adds space between buttons (modern alternative to margins) */
+    padding-top: 100px;         /* Positions close to top—adjust as needed (e.g., 50px for closer) */
+    padding-bottom: 20px; 
+}
+
+#get-btn {
+    padding: 12px 24px;         /* Comfortable button size */
+    background-color: #007bff;
+    color: white;
+    border: none;
+}
+
+#post-btn {
+    padding: 12px 24px;         /* Comfortable button size */
+    background-color: #007bff;
+    color: white;
+    border: none;
+}

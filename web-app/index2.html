@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <title>API</title>
+    <!-- Why <title>API</title> ?
+        → Simple page title → shown in browser tab
+        → Good practice to give meaningful name
+    -->
+
+    <link rel="stylesheet" href="app2.css">
+    <!-- Why <link rel="stylesheet"> ?
+        → Loads external CSS file → separates styles from HTML
+        → app2.css can contain button/main styles (not shown here)
+    -->
+
+    <link rel="stylesheet" href="app2.js">
+    <!-- Why this line is wrong?
+        → rel="stylesheet" is for CSS only → not for JavaScript
+        → For JS you must use <script src="app2.js"></script>
+        → This line does nothing useful → browser ignores it for JS
+        → Correct way: use <script> tag (you already have it at bottom)
+    -->
+
+    <body>
+        <div class="main">
+            <!-- Why class="main" ?
+                → Likely used in app2.css for centering/styling the container
+            -->
+
+            <button id="get-btn">GET Data</button>
+            <!-- Why id="get-btn" ?
+                → Unique identifier → easy to select in JS with querySelector
+                → "GET Data" text → clear button label for user
+            -->
+
+            <button id="post-btn">POST Data</button>
+            <!-- Same reason: id for JS, clear label -->
+        </div>
+
+        <script src="app2.js"></script>
+        <!-- Why <script> at the end of <body> ?
+            → DOM is fully loaded when script runs → all elements exist
+            → No need for DOMContentLoaded event
+            → Best practice for simple pages (performance + reliability)
+        -->
+    </body>
+</html>

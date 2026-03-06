@@ -757,3 +757,107 @@ createProductsPromises()
 // → Can chain more .then() if needed
 // → Modern standard (before async/await) for async sequencing
 // → In real apps: replace setTimeout with fetch/API calls
+
+//////////////////////////////////////////////////////////////////////////////////////
+// async-await
+const productsPromisesAsync = [{
+    title: 'Book1',
+    price: 79
+}, {
+    title: 'Book2',
+    price: 29
+}, {
+    title: 'Book3',
+    price: 59
+}]
+// Why array of products?
+// → Simulates real data source (like database or API response)
+// → Used to demonstrate async add + fetch pattern
+
+getProductsPromisesAsync = () => {
+    setTimeout(() => {
+        const fetchProductsPromisesAsync = productsPromisesAsync.map((item) => {
+            return `Product: ${item.title} - Price: ${item.price}`
+        })
+        console.log(fetchProductsPromisesAsync)
+    }, 2000)
+}
+// Why setTimeout in getProductsPromisesAsync?
+// → Simulates asynchronous operation (e.g. fetching from server)
+// → Delays logging by 2 seconds → mimics network/API delay
+// → map() transforms each product into formatted string
+// → This function is synchronous but contains async behavior inside
+
+createProductsPromisesAsync = () => {
+    // Why return new Promise(...) ?
+    // → Promises are the foundation for async/await
+    // → Allows awaiting the add operation → guarantees order
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            productsPromisesAsync.push({
+                title: 'New Book',
+                price: 99
+            })
+            const error = false
+            if (!error) {
+                resolve()
+                // Why resolve() with no value?
+                // → Signals success → lets await continue
+                // → Could pass data: resolve('Added successfully')
+            } else {
+                reject('Error')
+                // Why reject('Error') ?
+                // → Signals failure → would trigger catch in async function
+                // → Can pass error object/message → useful for debugging
+            }
+        }, 3000)
+        // Why 3000ms delay?
+        // → Longer than getProducts delay → simulates real async add operation
+        // → Ensures we can test proper sequencing
+    })
+}
+
+async function getData() {
+    // Why async keyword before function?
+    // → Marks function as asynchronous → allows use of await inside
+    // → Lets function return a Promise implicitly
+    // → Makes code look synchronous while handling async operations
+
+    await createProductsPromisesAsync()
+    // Why await here?
+    // → Pauses execution until the Promise resolves
+    // → Guarantees new book is added before next line runs
+    // → No race condition → clean sequential flow
+    // → If Promise rejects → jumps to catch block
+
+    getProductsPromisesAsync()
+    // → Runs only after await finishes → sees updated array
+    // → Logs 4 products → includes 'New Book'
+}
+
+getData()
+// Why call getData() ?
+// → Triggers the async sequence
+// → Because it's async → returns Promise (but we don't need to await it here)
+
+// output:
+// [
+//   'Product: Book1 - Price: 79',
+//   'Product: Book2 - Price: 29',
+//   'Product: Book3 - Price: 59',
+//   'Product: New Book - Price: 99'
+// ]
+// Why 4 products?
+// → await waits for createProductsPromisesAsync to finish
+// → Only then runs getProductsPromisesAsync → sees the pushed item
+// → Solves the race condition perfectly
+
+// Summary: Why async/await is powerful here
+// → Makes async code look synchronous → much easier to read & reason about
+// → No nesting (no "callback hell" or long .then() chains)
+// → Error handling with try/catch (not shown here but possible)
+// → Guarantees order: add → then get → no race condition
+// → Modern standard in JavaScript (replaces callback-heavy code)
+// → In real apps: replace setTimeout with fetch/API calls
+
+
