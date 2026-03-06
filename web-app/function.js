@@ -9,13 +9,27 @@ console.log(uuidv4())
 // Helper: Load products from localStorage or return empty array
 const getSaveProducts = () => {
     // Attempt to load previously saved products
-    const productJSON = localStorage.getItem('products')  
-    return productJSON !== null ? JSON.parse(productJSON) : []
-    // Why this ternary alternative?
-    // → Very concise one-liner → does the same as if/else above
-    // → Common pattern when result is simple
-    // → Note: typo in your code → SON.parse should be JSON.parse
-    // → Arrow function body with implicit return (no curly braces)
+    const productJSON = localStorage.getItem('products')
+    
+    // Why try { ... } catch (e) { ... } ?
+    // → JSON.parse() can throw SyntaxError if the stored string is not valid JSON
+    //   (e.g. corrupted data, manual tampering, old incompatible format, browser bug)
+    // → Without try-catch → entire app would crash on load if data is invalid
+    // → catch block returns safe default [] → app continues to work (empty list)
+    // → Very good defensive programming practice for any code that parses external/untrusted data
+    try {
+        return productJSON !== null ? JSON.parse(productJSON) : []
+        // Why ternary operator here?
+        // → Very concise → same logic as if/else but shorter
+        // → Common pattern for "value or default" cases
+        // → If productJSON exists → parse it; otherwise → return empty array
+    } catch (e) {
+        return []
+        // Why return [] in catch?
+        // → Graceful degradation → app doesn't crash
+        // → User sees empty list instead of broken page
+        // → In real app you might log the error: console.error("Invalid products data:", e)
+    }
 }
 
 // Helper: Save products array to localStorage
@@ -26,11 +40,11 @@ const saveProducts = (products) => {
     // → Turns array into valid JSON string that can be parsed later
     localStorage.setItem('products', JSON.stringify(products))
     
-    // Why no try/catch?
+    // Why no try/catch here?
     // → Kept simple for learning → errors are rare in local dev
-    // → In real apps: add try/catch for quota exceeded or security blocks
+    // → In real apps: add try { ... } catch to handle quota exceeded or security blocks
+    // → JSON.stringify almost never fails with plain data → low risk
 }
-// Arrow function with single parameter → parentheses optional but kept for clarity
 
 // Remove a product by its unique id
 const removeProduct = (id) => {
@@ -39,7 +53,6 @@ const removeProduct = (id) => {
     // → Returns numeric index → perfect for .splice()
     // → .find() would return object → harder to remove from array
     const productIndex = products.findIndex(item => item.id === id)
-    // Arrow callback → short, implicit return
     
     // Why check > -1 ?
     // → .findIndex returns -1 if no match → .splice(-1) would be invalid
@@ -58,7 +71,6 @@ const toggleProduct = (id) => {
     // → We want the object itself to modify .exist
     // → No need for index → direct property change
     const product = products.find(item => item.id === id)
-    // Arrow callback → very concise
     
     // Why check !== undefined ?
     // → Prevents error if id not found (though unlikely with proper buttons)
