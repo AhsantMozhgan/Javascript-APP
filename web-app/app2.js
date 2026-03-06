@@ -3,113 +3,69 @@ const postBtn = document.querySelector('#post-btn')
 // Why querySelector('#id') ?
 // → Selects elements by unique id → fast & reliable
 // → Stored in variables → cleaner code, reusable references
+// → Makes event listener attachment simple and readable
 
-const sendHttpsRequest = (method, url, data) => {
-    // Why function with 3 parameters?
-    // → method: 'GET' or 'POST' (or others)
-    // → url: target endpoint
-    // → data: optional body for POST/PUT (undefined for GET)
-    // → Reusable for any HTTP request type
+sendHttpRequest = (method, url, data) => {
+    // Why this reusable function?
+    // → Central place for all HTTP requests → DRY (Don't Repeat Yourself)
+    // → Works for both GET and POST (and other methods)
+    // → Returns a Promise → perfect for .then() chaining or async/await
 
-    const promise = new Promise((resolve, reject) => {
-        // Why new Promise(...) ?
-        // → Wraps old callback-based XHR into modern Promise API
-        // → Allows .then() / .catch() chaining or async/await
-        // → Makes code linear & readable
+    return fetch(url)
+    // Why fetch(url) ?
+    // → Modern browser API for HTTP requests (replaces XMLHttpRequest)
+    // → Returns a Promise → resolves to Response object
+    // → Simpler syntax than XHR → no need for xhr.open / xhr.send
+    // → Note: method & data parameters are not used yet → see below
 
-        const xhr = new XMLHttpRequest()
-        // Why XMLHttpRequest() ?
-        // → Classic browser API for HTTP requests (pre-Fetch era)
-        // → Still useful for learning low-level HTTP or legacy support
-
-        xhr.open(method, url)
-        // Why xhr.open(method, url) ?
-        // → Configures request method ('GET', 'POST') and URL
-        // → Does NOT send yet — just prepares
-
-        xhr.responseType = 'json'
-        // Why responseType = 'json' ?
-        // → Automatically parses response as JSON
-        // → xhr.response becomes JS object → no need for JSON.parse()
-
-        if (data) {
-            xhr.setRequestHeader('Content-Type', 'application/json')
-            // Why setRequestHeader?
-            // → Tells server we're sending JSON data
-            // → Only needed for POST/PUT with body
-            // → JSONPlaceholder requires this for POST
-        }
-
-        xhr.onload = () => {
-            resolve(xhr.response)
-            // Why resolve(xhr.response) ?
-            // → Success (status 200-299) → fulfills Promise
-            // → Passes parsed JSON to .then()
-            // → xhr.onload fires when response is fully received
-        }
-
-        xhr.onerror = () => {
-            reject('Error')
-            // Why reject('Error') ?
-            // → Network error, CORS, timeout, etc. → rejects Promise
-            // → Triggers .catch() → graceful error handling
-            // → Could be improved: reject(xhr.statusText || 'Network Error')
-        }
-
-        xhr.send(JSON.stringify(data))
-        // Why xhr.send(JSON.stringify(data)) ?
-        // → Sends request to server
-        // → For GET → data is undefined → send() with no argument
-        // → For POST → converts JS object → JSON string → sends as body
-        // → Must be after setRequestHeader for Content-Type
-    })
-
-    return promise
-    // Why return promise?
-    // → Lets caller use .then() / .catch() or await
-    // → Turns callback-style XHR into Promise-based API
-}
-
-// GET example using Promise
-const getData = () => {
-    sendHttpsRequest('GET', 'https://jsonplaceholder.typicode.com/posts/1')
         .then(res => {
-            console.log(res)
-            // Why .then(res => ...) ?
-            // → Runs when Promise resolves → res = parsed JSON object
-            // → JSONPlaceholder /posts/1 returns { userId, id, title, body }
+            return res.json()
+            // Why res.json() ?
+            // → Response object has .json() method → parses body as JSON
+            // → Returns another Promise → resolves to JS object/array
+            // → Most APIs (like JSONPlaceholder) return JSON → very common
         })
-        .catch(err => {
-            console.log(err)
-            // Why .catch(err => ...) ?
-            // → Runs on reject (network error, 404, etc.)
-            // → Handles failures → prevents unhandled rejection
-        })
+    // Why no .catch() here?
+    // → Left to caller → getData/postData can handle errors individually
+    // → Makes sendHttpRequest generic & reusable
 }
 
-// POST example (now implemented)
-const postData = () => {
-    sendHttpsRequest('POST', 'https://jsonplaceholder.typicode.com/posts', {
-        userId: 2,
-        id: 2,
-        title: 'Post Title',
-        body: 'Post Body'
-        // Why this data object?
-        // → Matches JSONPlaceholder expected format
-        // → Fake POST → server returns similar object with new id
-    })
-        .then(res => console.log('Created:', res))
-        // → res = { userId: 2, id: 101, title: 'Post Title', body: 'Post Body' }
-        // → id usually becomes 101 (JSONPlaceholder auto-increments)
-        .catch(err => console.log('POST error:', err))
+// GET example using Fetch + Promise
+const getData = () => {
+    sendHttpRequest('GET', 'https://jsonplaceholder.typicode.com/posts/1')
+        .then(responseData => {
+            console.log(responseData)
+            // Why .then(responseData => ...) ?
+            // → Runs when fetch + res.json() succeeds
+            // → responseData = parsed JSON object → e.g. { id: 1, title: "...", body: "..." }
+            // → JSONPlaceholder /posts/1 returns one sample post
+        })
+        // Why no .catch() here?
+        // → Optional → network errors will still show in console
+        // → In real app: add .catch(err => console.error('GET failed:', err))
 }
-// Why send data as object?
-// → sendHttpsRequest converts to JSON string automatically
-// → setRequestHeader('Content-Type', 'application/json') tells server
-// → JSONPlaceholder echoes back the sent data + new id
+
+// POST example (placeholder — your challenge to implement)
+const postData = () => {
+    // Empty for now → your task to complete
+    // → Typical POST with fetch:
+    // sendHttpRequest('POST', 'https://jsonplaceholder.typicode.com/posts', {
+    //     title: 'New Post',
+    //     body: 'This is the content',
+    //     userId: 1
+    // })
+    // .then(res => console.log('Created:', res))
+    // .catch(err => console.log('POST error:', err))
+}
+// Why postData is empty?
+// → Placeholder → you need to fill it to send POST request
+// → JSONPlaceholder supports fake POST → returns created object with new id
+// → To send data: pass third argument (object) to sendHttpRequest
+// → Fetch automatically handles JSON.stringify + Content-Type header
 
 getBtn.addEventListener('click', getData)
 postBtn.addEventListener('click', postData)
 // Why addEventListener('click', ...) ?
-// → Runs getData/postData when button clicked
-// → Modern & clean → preferred over onclick="..." in HTML
+// → Attaches click handler → runs getData/postData when button clicked
+// → Modern & preferred over onclick="..." in HTML
+// → Clean separation: HTML = structure, JS = behavior
