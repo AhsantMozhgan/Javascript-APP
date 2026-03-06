@@ -919,3 +919,72 @@ console.log(checkOut(29,59, 29, 89))
 
 // Even better version using reduce (more concise):
 // const checkOut = (...price) => price.reduce((sum, item) => sum + item, 0)
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+// challenge-17
+// Username
+// Total Price
+// Products: Book1, Book2, Book3
+
+const carsDetails = (username, totalPrice, ...products) => {
+    // Why three parameters: username, totalPrice, ...products ?
+    // → username and totalPrice are fixed/required arguments
+    // → ...products is rest parameter → collects ALL remaining arguments into array
+    // → Allows calling function with any number of products (0, 1, 5, 20...)
+    // → Very flexible → perfect for shopping cart, order summary, etc.
+
+    console.log(`Username: ${username}`)
+    // Why template literal (`...`) ?
+    // → Modern way to insert variables → cleaner than 'Username: ' + username
+    // → Reads like normal sentence → very readable
+    // → ${username} → expression inside ${} is evaluated
+
+    console.log(`Total Price: ${totalPrice}`)
+    // Same reason → inserts totalPrice value cleanly
+
+    console.log(`Products: ${products.join(', ')}`)
+    // Why products.join(', ') ?
+    // → products is array → join turns it into string: 'Book1, Book2, Book3'
+    // → ', ' separator → nice human-readable list with commas and space
+    // → If products = [] → join returns empty string → "Products: "
+    // → Very common pattern for printing lists nicely
+}
+// Why arrow function here?
+// → No need for own this → safe & concise
+// → Modern style → very common for utility/helper functions
+// → One-liner body → could even be written as single return if needed
+
+carsDetails('MasoodSadri', 188, 'Book1', 'Book2', 'Book3')
+// Why call like this?
+// → username = 'MasoodSadri'
+// → totalPrice = 188
+// → ...products collects the rest → ['Book1', 'Book2', 'Book3']
+// → Rest parameter automatically gathers everything after the second argument
+
+// Output:
+// Username: MasoodSadri
+// Total Price: 188
+// Products: Book1, Book2, Book3
+
+// Summary: Why this pattern is very powerful (rest parameters + template literals)
+// → Flexible number of products → no fixed limit
+// → Clean output formatting → looks professional
+// → Easy to extend: add tax, discount, date, etc.
+// → Real-world usage: checkout summary, order confirmation, log function
+// → Could be improved with:
+//   - Validation (check totalPrice is number)
+//   - Better formatting (e.g. $188.00)
+//   - Return object instead of console.log
+
+
+// OR
+// const carsDetails = (username, totalPrice, ...products) => {
+//     console.log(`Username: ${username}`);
+//     console.log(`Total Price: $${totalPrice.toFixed(2)}`);
+//     console.log(`Products: ${products.join(', ') || 'None'}`);
+// };
+// carsDetails('MasoodSadri', 188, 'Book1', 'Book2', 'Book3')
+
+
+//////////////////////////////////////////////////////////////////////////////////////
