@@ -120,3 +120,31 @@ const price = 79
 //OR
 const message = price > 59 ? 'Has Discount' : 'Has Not Discount!'
 console.log(message)
+
+
+// error-handling
+// let number = '2'
+// console.log (typeof number)     // string
+
+let number = () => {
+    return 20
+}
+console.log (typeof number)     // function
+
+/////
+const getPrice = (amount) => {
+    if (typeof amount === 'number') {
+        return amount
+    } else {
+        throw Error('Amount must be a number')
+    }
+}
+console.log(getPrice('20'))
+
+/////
+try {
+    const number = 2
+    console.log(number)
+} catch (e) {
+    console.log('Error')
+}
