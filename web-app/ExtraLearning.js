@@ -226,9 +226,9 @@ console.log(username2)         // → User { email: 'ahsantmozhgan2@gmail.com' }
 // → All users would share the same id/email if you tried to reuse it
 // → No inheritance or reusability for creating similar objects with different data
 
-const UserI = function(email, id) {
-    this.email = email
+const UserI = function(id, email) {
     this.id = id
+    this.email = email
     // Why this.email = email and this.id = id ?
     // → this refers to the new object created by new UserI(...)
     // → Assigns the passed arguments as properties of each instance
@@ -279,3 +279,60 @@ console.log(usernameI2.userInfo())
 // → this inside methods refers to the calling instance
 // → Classic way to implement "classes" in pre-ES6 JavaScript
 // → Modern equivalent: class UserI { constructor(email, id) { ... } userInfo() { ... } }        
+
+//////////////////////////////////////////////////////////////////////
+// class-syntax
+class UserC {
+    // Why class keyword (ES6+)?
+    // → Modern, cleaner syntax for creating constructor functions + prototypes
+    // → More readable & expressive than old function + User.prototype.method
+    // → Still prototype-based inheritance under the hood (not classical inheritance)
+    // → Standard way in modern JavaScript
+
+    constructor(id, email) {
+        this.id = id
+        this.email = email
+        // Why constructor method?
+        // → Special method called automatically when using new UserC(...)
+        // → this refers to the newly created instance
+        // → Initializes instance properties (like old constructor function body)
+        // → Can have only one constructor per class
+    }
+
+    userInfo() {
+        return `ID: ${this.id} - Email: ${this.email}`
+        // Why method defined inside class body?
+        // → Automatically added to UserC.prototype (shared across all instances)
+        // → Saves memory: method exists once, not duplicated per object
+        // → this refers to the instance that calls it (e.g. usernameC.userInfo())
+        // → No need to write UserC.prototype.userInfo = function() { ... }
+    }
+    // Why no function keyword?
+    // → Class method shorthand → equivalent to methodName: function() { ... }
+    // → Cleaner & more readable
+}
+
+const usernameC = new UserC(2, 'classtest@gmail.com')
+// Why new UserC(...) ?
+// → new does 4 things (same as old constructor pattern):
+//   1. Creates new empty object {}
+//   2. Sets this to point to that new object
+//   3. Runs constructor → adds id & email
+//   4. Returns the new object automatically
+// → Without new → this would be global/window → bad practice
+
+console.log(usernameC.userInfo())
+// → Outputs: "ID: 2 - Email: classtest@gmail.com"
+
+// Why does this work?
+// → usernameC inherits userInfo from UserC.prototype
+// → this inside userInfo refers to usernameC instance
+// → class syntax makes prototype inheritance feel more like classical OOP
+// → But it's syntactic sugar — still prototype chain under the hood
+
+// Summary: Why prefer class syntax over old constructor + prototype?
+// → More readable & structured (constructor, methods grouped together)
+// → No need to manually set .prototype
+// → Easier to add static methods, getters/setters, extends (inheritance)
+// → Standard in modern JavaScript (React, Node, etc.)
+// → Still fully compatible with old prototype style
