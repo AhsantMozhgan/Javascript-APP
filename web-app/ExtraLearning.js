@@ -404,3 +404,78 @@ console.log(usernameSc)
 // → Can add/override methods easily
 // → Modern standard in JavaScript (ES6+)
 // → Much clearer than old constructor + User.prototype = Object.create(User.prototype)
+
+//////////////////////////////////////////////////////////////////////////////////
+// getters-and-setters
+// const fullName = 'Masood Sadri'
+// const parts = fullName.split(' ')
+// console.log(parts)         // → [ 'Masood', 'Sadri' ]
+// console.log(parts[0])      // → Masood
+// Why this example?
+// → Shows basic string splitting → useful when setter needs to parse input
+// → Prepares understanding for how setter can split value and assign parts
+
+// const productTest = {
+//     title: 'book',
+//     price: 79,
+//     productInfo() {
+//         return console.log(`Title: ${this.title} - Price: ${this.price}`)
+//     }
+// }
+
+// console.log(productTest.productInfo())
+// Why this regular method doesn't work as getter?
+// → It's a normal function → called with () → productTest.productInfo()
+// → Returns undefined (because console.log returns undefined)
+// → Not a getter → can't be accessed as property (productTest.productInfo)
+
+// const productTest = {
+//     title: 'book',
+//     price: 79,
+//     get productInfo() {
+//         return console.log(`Title: ${this.title} - Price: ${this.price}`)
+//     },
+//     set productInfo(value) {
+//         parts = value.split(' ')
+//         this.title = parts[0]
+//         this.price = parts[1]
+//     }
+// }
+
+productTest.productInfo = 'Book2 59'
+// Why productTest.productInfo = ... (no parentheses)?
+// → Because productInfo is a setter → treated like a property assignment
+// → Setter is automatically called when you assign value to productInfo
+// → value parameter receives 'Book2 59'
+
+console.log(productTest.productInfo)
+// → Calls the getter → runs console.log inside getter
+// → Outputs: "Title: Book2 - Price: 59"
+// → Then console.log prints undefined (because getter returns console.log's result)
+
+// How getters & setters work in object literal
+// get productInfo() { ... }
+// → Defines a getter → accessed like property: productTest.productInfo
+// → No () needed → runs code inside and returns its value
+// → Here it logs info but returns undefined (console.log returns undefined)
+// → Real getter usually returns a value (not logs)
+
+// set productInfo(value) { ... }
+// → Defines a setter → called when assigning: productTest.productInfo = 'something'
+// → value is the assigned value ('Book2 59')
+// → Splits string → updates title & price
+// → Allows "virtual" properties → user thinks it's one property but it controls multiple
+
+// Why use getters/setters instead of regular methods?
+// → Cleaner API: looks like normal property access/assignment
+//   productTest.productInfo = 'New Title 100'  // setter
+//   console.log(productTest.productInfo)       // getter
+// → Hides implementation details → user doesn't see split logic
+// → Can add validation, formatting, side effects (e.g. save to storage)
+// → Very common in modern JS (Vue, React state, API wrappers)
+
+// Summary: Your example shows
+// → Getter can run side effects (console.log) but usually returns data
+// → Setter parses input and updates multiple properties
+// → Together they create a "virtual" productInfo property
+// → Very powerful for clean, readable object interfaces
