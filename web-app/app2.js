@@ -1,86 +1,67 @@
 const getBtn = document.querySelector('#get-btn')
 const postBtn = document.querySelector('#post-btn')
 // Why querySelector('#id') ?
-// → Selects elements by unique id → fast & reliable
-// → Stored in variables → cleaner code, reusable references
-// → Makes event listener attachment simple and readable
+// → Selects buttons by their unique id → very fast & reliable
+// → Stored in variables → code becomes cleaner and more readable
+// → Makes attaching event listeners simple and maintainable
 
-sendHttpRequest = (method, url, data) => {
-    // Why this reusable function?
-    // → Central place for all HTTP requests → DRY (Don't Repeat Yourself)
-    // → Works for GET, POST, PUT, DELETE — just change method & data
-    // → Returns Promise → perfect for .then() chaining or async/await
-
-    return fetch(url, {
-        method: method,
-        // Why method: method ?
-        // → Dynamically sets HTTP method ('GET', 'POST', etc.)
-        // → Passed as first argument → very flexible
-
-        body: JSON.stringify(data),
-        // Why JSON.stringify(data) ?
-        // → Converts JS object to JSON string → required for POST/PUT body
-        // → For GET → data is undefined → body becomes undefined (ignored)
-        // → Fetch automatically skips body for GET/HEAD
-
-        headers: data ? {'Content-Type': 'application/json'} : {}
-        // Why conditional headers?
-        // → Only set 'Content-Type' when sending data (POST/PUT)
-        // → GET requests don't need it → empty object {} is safe
-        // → Tells server the body is JSON → JSONPlaceholder expects this
-    })
-
-        .then(res => {
-            return res.json()
-            // Why res.json() ?
-            // → Response object has .json() method → parses body as JSON
-            // → Returns another Promise → resolves to JS object/array
-            // → Most APIs (like JSONPlaceholder) return JSON → very common
-            // → If not JSON → would reject → can be caught later
-        })
-    // Why no .catch() here?
-    // → Left to caller → getData/postData can handle errors individually
-    // → Makes sendHttpRequest generic & reusable
-    // → Network errors or bad status still propagate to .catch()
-}
-
-// GET example using Fetch + Promise
 const getData = () => {
-    sendHttpRequest('GET', 'https://jsonplaceholder.typicode.com/posts/1')
-        .then(responseData => {
-            console.log(responseData)
-            // Why .then(responseData => ...) ?
-            // → Runs when fetch + res.json() succeeds
-            // → responseData = parsed JSON object → e.g. { id: 1, title: "...", body: "..." }
-            // → JSONPlaceholder /posts/1 returns one sample post
-        })
-        // Why no .catch() here?
-        // → Optional → network errors will still show in console
-        // → In real app: add .catch(err => console.error('GET failed:', err))
+    axios.get('https://jsonplaceholder.typicode.com/posts/1')
+    // Why axios.get(...) ?
+    // → Axios is a very popular Promise-based HTTP client
+    // → Automatically handles:
+    //   - JSON parsing (res.data is already JS object)
+    //   - 'Content-Type' header for POST
+    //   - Rejects on non-2xx status (unlike fetch)
+    // → Much simpler syntax than fetch or XMLHttpRequest
+
+    .then(res => {
+        console.log(res)
+        // Why res instead of res.data?
+        // → Axios response object has many useful fields:
+        //   res.data     → the actual JSON payload (most used)
+        //   res.status   → HTTP status code (200, 201, etc.)
+        //   res.statusText → "OK", "Created", etc.
+        //   res.headers  → response headers
+        //   res.config   → request config
+        // → Logging whole res → good for learning Axios structure
+        // → In real app: usually console.log(res.data) or use res.data directly
+    })
+    // Why no .catch() here?
+    // → Optional for demo → network/404 errors will show as unhandled rejection in console
+    // → In real app: add .catch(err => console.error('GET failed:', err.message || err))
 }
 
-// POST example (now implemented)
+// POST example using Axios
 const postData = () => {
-    sendHttpRequest('POST', 'https://jsonplaceholder.typicode.com/posts', {
+    axios.post('https://jsonplaceholder.typicode.com/posts', {
         userId: 2,
         id: 2,
         title: 'Post Title',
         body: 'Post Body'
-        // Why this data object?
-        // → Matches JSONPlaceholder expected format for /posts
-        // → Fake POST → server returns similar object with new id (usually 101)
-        // → Shows how to send real JSON body
+        // Why pass object directly as second argument?
+        // → Axios automatically:
+        //   - JSON.stringify(data)
+        //   - Sets 'Content-Type': 'application/json'
+        //   - Sends as request body
+        // → Much simpler than fetch or XHR
+        // → JSONPlaceholder fake API expects this format
+    }).then(res => {
+        console.log(res)
+        // What does res contain on POST?
+        // → res.data = { userId: 2, id: 101, title: 'Post Title', body: 'Post Body' }
+        // → id usually becomes 101 (JSONPlaceholder auto-increments)
+        // → res.status = 201 (Created)
+        // → Shows POST was successful
     })
-    .then(responseData => console.log('Created:', responseData))
-    // → responseData = { userId: 2, id: 101, title: 'Post Title', body: 'Post Body' }
-    // → id auto-incremented by server → proves POST worked
-    .catch(err => console.log('POST error:', err))
-    // → Catches network errors, CORS, invalid JSON, etc.
+    // Why no .catch() here?
+    // → Optional for demo → same as getData
+    // → In production: add .catch(err => console.error('POST failed:', err.message || err))
 }
 
 getBtn.addEventListener('click', getData)
 postBtn.addEventListener('click', postData)
 // Why addEventListener('click', ...) ?
-// → Attaches click handler → runs getData/postData when button clicked
+// → Attaches click handler → runs getData/postData when button is clicked
 // → Modern & preferred over onclick="..." in HTML
 // → Clean separation: HTML = structure, JS = behavior
