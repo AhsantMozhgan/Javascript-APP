@@ -557,3 +557,105 @@ console.log(usernameCh16)
 // → Hides implementation (splitting string) → user doesn't see details
 // → Very common pattern in modern JS for computed/virtual properties
 // → Note: getter returns string with leading ' → probably typo (should be ` or remove quote)
+
+
+//////////////////////////////////////////////////////////////////////////////////
+// callback-function
+const productsCallback = [{
+    title: 'Book1',
+    price: 79
+}, {
+    title: 'Book2',
+    price: 29
+}, {
+    title: 'Book3',
+    price: 59
+}]
+// Why array of objects?
+// → Simulates a list of products (real data source)
+// → Each has title & price → useful for mapping/formatting
+
+// getProductsCallback = () => {
+//     setTimeout(() => {
+//         const fetchProductsCallback = productsCallback.map((item) => {
+//             return `Product: ${item.title} - Price: ${item.price}`
+//         })
+//         console.log(fetchProductsCallback)
+//     }, 2000)
+// }
+// Why setTimeout(..., 2000)?
+// → Simulates asynchronous delay (like API call or network fetch)
+// → Code inside runs after 2 seconds → mimics real-world async behavior
+
+// createProductsCallback = () => {
+//     setTimeout(() => {
+//         productsCallback.push({
+//             title: 'New Book',
+//             price: 99
+//         })
+//     }, 3000)
+// }
+// createProductsCallback()
+// getProductsCallback()
+// // output: 
+// // [
+// //   'Product: Book1 - Price: 79',
+// //   'Product: Book2 - Price: 29',
+// //   'Product: Book3 - Price: 59'
+// // ]
+
+// Why this version prints only 3 products?
+// → createProductsCallback adds item after 3 seconds
+// → getProductsCallback logs after 2 seconds
+// → When getProductsCallback runs → new book not added yet (race condition)
+// → Classic async problem: callback runs too early → misses update
+// → Shows why we need callbacks or promises to coordinate async operations
+
+getProductsCallback = () => {
+    setTimeout(() => {
+        const fetchProductsCallback = productsCallback.map((item) => {
+            return `Product: ${item.title} - Price: ${item.price}`
+        })
+        console.log(fetchProductsCallback)
+    }, 2000)
+}
+
+createProductsCallback = (callback) => {
+    setTimeout(() => {
+        productsCallback.push({
+            title: 'New Book',
+            price: 99
+        })
+        callback()
+        // Why call callback() here?
+        // → After adding new product → immediately call the passed function
+        // → Guarantees getProductsCallback runs AFTER createProductsCallback finishes
+        // → Solves race condition → ensures data is updated before logging
+    }, 3000)
+}
+
+createProductsCallback(getProductsCallback)
+// Why pass getProductsCallback as argument?
+// → This is the callback pattern
+// → createProductsCallback takes a function as parameter
+// → Runs that function only after its own work is done
+// → Classic way to handle "do this, then do that" in async code
+
+// output: 
+// [
+//   'Product: Book1 - Price: 79',
+//   'Product: Book2 - Price: 29',
+//   'Product: Book3 - Price: 59',
+//   'Product: New Book - Price: 99'
+// ]
+// Why now 4 products?
+// → createProductsCallback finishes first (adds item)
+// → Then calls getProductsCallback → sees updated array
+// → Perfect coordination → no race condition
+
+// Summary: Callback pattern demonstrated
+// → First version: two independent setTimeout → race condition → misses update
+// → Second version: pass callback → run it only after async work is done
+// → Classic solution for "do A, then do B" when A is asynchronous
+// → Before Promises/async-await → callbacks were main way to handle async flow
+// → Still used today (e.g. event listeners, array methods like forEach/map/filter)
