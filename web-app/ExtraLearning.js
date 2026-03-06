@@ -659,3 +659,101 @@ createProductsCallback(getProductsCallback)
 // → Classic solution for "do A, then do B" when A is asynchronous
 // → Before Promises/async-await → callbacks were main way to handle async flow
 // → Still used today (e.g. event listeners, array methods like forEach/map/filter)
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+// promises
+const productsPromises = [{
+    title: 'Book1',
+    price: 79
+}, {
+    title: 'Book2',
+    price: 29
+}, {
+    title: 'Book3',
+    price: 59
+}]
+// Why array of products?
+// → Simulates real data source (like database or API response)
+// → Used to demonstrate async add + fetch pattern
+
+getProductsPromises = () => {
+    setTimeout(() => {
+        const fetchProductsPromises = productsPromises.map((item) => {
+            return `Product: ${item.title} - Price: ${item.price}`
+        })
+        console.log(fetchProductsPromises)
+    }, 2000)
+}
+// Why setTimeout in getProductsPromises?
+// → Simulates asynchronous operation (e.g. fetching from server)
+// → Delays logging by 2 seconds → mimics network/API delay
+// → map() transforms each product into formatted string
+
+createProductsPromises = () => {
+    // Why return new Promise(...) ?
+    // → Promises are the modern way to handle async operations
+    // → Allows chaining .then() / .catch() → cleaner than callbacks
+    // → Makes it easy to say "do this, then do that"
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            productsPromises.push({
+                title: 'New Book',
+                price: 99
+            })
+            const error = false
+            if (!error) {
+                resolve()
+                // Why resolve() ?
+                // → Signals success → triggers .then() handler
+                // → Can pass data: resolve(newProducts) if needed
+            } else {
+                reject('Error')
+                // Why reject('Error') ?
+                // → Signals failure → triggers .catch() handler
+                // → Can pass error object/message → useful for debugging
+            }
+        }, 3000)
+        // Why 3000ms delay?
+        // → Longer than getProducts delay → simulates real async add operation
+    })
+}
+
+createProductsPromises()
+    .then(getProductsPromises)
+    // Why .then(getProductsPromises) ?
+    // → Runs getProductsPromises only AFTER promise resolves (add finishes)
+    // → Guarantees new book is added before logging → no race condition
+    // → Cleaner than nested callbacks → linear readable flow
+
+    .catch(err => {
+        console.log(err)
+        // Why .catch() ?
+        // → Handles rejection (error case)
+        // → Prevents unhandled promise rejection warnings
+        // → Can log/show user-friendly message
+    })
+// output: 
+// [
+//   'Product: Book1 - Price: 79',
+//   'Product: Book2 - Price: 29',
+//   'Product: Book3 - Price: 59',
+//   'Product: New Book - Price: 99'
+// ]
+// Why 4 products now?
+// → createProductsPromises finishes first (adds 'New Book')
+// → resolve() → triggers .then() → runs getProductsPromises
+// → Logs updated array → includes new item
+// → Solves the race condition from callback version
+
+// Summary: Why Promises are better than plain callbacks here
+// → Linear flow: create → then get → looks like synchronous code
+// → No nesting ("callback hell")
+// → Easy error handling with .catch()
+// → Can chain more .then() if needed
+// → Modern standard (before async/await) for async sequencing
+// → In real apps: replace setTimeout with fetch/API calls
