@@ -107,3 +107,16 @@ console.log(product.productName())  // → "Product Name: Book"
 // → this.title correctly accesses 'Book'
 // → Recommended modern way to write object methods
 // → Clean, concise, no arrow function pitfalls with this
+
+//if-short-syntax
+const price = 79
+// let message = ''
+// if(price > 59) {
+//     message = 'HasDiscount!'
+// } else {
+//     message = 'Has Not Discount!'
+// }
+
+//OR
+const message = price > 59 ? 'Has Discount' : 'Has Not Discount!'
+console.log(message)
