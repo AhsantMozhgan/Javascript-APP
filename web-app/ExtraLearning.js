@@ -148,3 +148,65 @@ try {
 } catch (e) {
     console.log('Error')
 }
+
+// constructor-function
+// const User = {
+//     id: 2,
+//     email: 'sadri.masood@gmail.com',
+//     userInfo: function () {
+//         return 'ID: ${this.id} - Email: ${this.email}'
+//     }
+// }
+// Why this object literal works?
+// → Simple object with properties and method
+// → this refers to the object itself when called as User.userInfo()
+// → But you can only have ONE instance → not reusable for multiple users
+
+// const User = function() {
+//     this.email = 'sadri.masood@gmail.com'
+// }
+// // const username = User()      // → undefined (or window.email in non-strict mode)
+// const username = new User()     // → User {}
+// console.log(username)         // → User { email: 'sadri.masood@gmail.com' }
+
+// Why does new User() create an object?
+// → When you call a function with new:
+//   1. A new empty object is created {}
+//   2. this is bound to that new object
+//   3. The function body runs → adds properties to this
+//   4. The new object is automatically returned
+// → Without new → this is global/window → bad side effects (pollutes global scope)
+// → That's why User() returns undefined (no explicit return)
+
+//Dynamic
+const User = function(email) {
+    this.email = email
+    // Why this.email = email ?
+    // → this refers to the newly created object (because of new)
+    // → Assigns the passed email to the instance
+    // → Each new User gets its own email
+}
+// Why function with parameter?
+// → Makes the constructor reusable/dynamic
+// → Each instance can have different data
+
+const username = new User('ahsantmozhgan@gmail.com')
+console.log(username)         // → User { email: 'ahsantmozhgan@gmail.com' }
+// Why new is required?
+// → new creates new object, sets this, runs constructor, returns object
+// → Without new → this would be global → bad practice
+
+const username2 = new User('ahsantmozhgan2@gmail.com')
+console.log(username2)         // → User { email: 'ahsantmozhgan2@gmail.com' }
+// Why multiple instances work?
+// → Every time you use new User(...) → completely new object is created
+// → Each has its own this → own email property
+// → Independent instances → perfect for multiple users/products/etc.
+
+// Summary: Constructor function pattern (classic JS before ES6 class)
+// → Function name starts with capital letter by convention (User)
+// → Use new to create instances
+// → this inside constructor refers to new object
+// → Properties added with this.property = value
+// → Each instance gets its own copy of properties
+// → Methods can be added too (though better on prototype for memory efficiency)
